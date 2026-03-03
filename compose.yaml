@@ -1,0 +1,6 @@
+services:
+  backend:
+    build: .
+    container_name: backend
+    environment:
+      - port=3000
