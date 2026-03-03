@@ -8,6 +8,56 @@ import { hashPassword, verifyPassword } from "../utils/password";
 
 const authRouter: Router = Router();
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Регистрация пользователя
+ *     description: Создает нового пользователя с хешированным паролем
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - age
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: ivan
+ *               password:
+ *                 type: string
+ *                 example: qwerty123
+ *               age:
+ *                 type: integer
+ *                 example: 20
+ *     responses:
+ *       201:
+ *         description: Пользователь успешно создан
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   example: ab12cd
+ *                 username:
+ *                   type: string
+ *                   example: ivan
+ *                 age:
+ *                   type: integer
+ *                   example: 20
+ *                 hashedPassword:
+ *                   type: string
+ *                   example: $2b$10$kO6Hq7ZKfV4cPzGm8u7mEuR7r4Xx2p9mP0q3t1yZbCq9Lh5a8b1QW
+ *       400:
+ *         description: Некорректные данные
+ */
 authRouter.post("/register", async (req: Request, res: Response) => {
   const b = req.body;
 
@@ -75,6 +125,48 @@ authRouter.post("/register", async (req: Request, res: Response) => {
   return res.status(StatusCodes.CREATED).json(u);
 });
 
+/**
+* @swagger
+* /api/auth/login:
+*   post:
+*     summary: Авторизация пользователя
+*     description: Проверяет логин и пароль пользователя
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - username
+*               - password
+*             properties:
+*               username:
+*                 type: string
+*                 example: ivan
+*               password:
+*                 type: string
+*                 example: qwerty123
+*     responses:
+*       200:
+*         description: Успешная авторизация
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 login:
+*                   type: boolean
+*                   example: true
+*       400:
+*         description: Отсутствуют обязательные поля
+*       401:
+*         description: Неверные учетные данные
+*       404:
+*         description: Пользователь не найден
+Теперь регистрация выглядит следующим образом:
+*/
 authRouter.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {

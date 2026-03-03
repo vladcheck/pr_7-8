@@ -2,8 +2,6 @@ import express, { json } from "express";
 import { nanoid } from "nanoid";
 import cors from "cors";
 import { swaggerParams } from "./swagger";
-import type { Response, Request } from "express";
-import { getOk } from "./utils/requestHelpers";
 import morgan from "morgan";
 import apiRouter from "./routers/apiRouter";
 
