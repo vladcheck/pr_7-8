@@ -212,7 +212,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
  * /api/auth/me:
  *  get:
  *    summary: Получить данные клиента, если он авторизован
- *    tags: [User, Auth]
+ *    tags: [Users, Auth]
  *    description: Если клиент авторизован, то вернет информацию о нем
  *    headers:
  *      Authorization:
