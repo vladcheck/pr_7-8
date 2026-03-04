@@ -2,6 +2,7 @@
 ## Маршруты
 | Маршрут | Методы | Нужна авторизация? |
 | --- | --- | --- |
+| / | GET | Нет |
 | /api/products | GET, POST | Нет |
 | /api/products/:id | GET,PUT,DELETE | Да |
 | /api/users | GET | Нет |
