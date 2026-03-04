@@ -23,3 +23,7 @@ export const getUnauthorized = getRequestHelperFactory(
   StatusCodes.UNAUTHORIZED,
   ReasonPhrases.UNAUTHORIZED,
 );
+export const getInternalServerError = getRequestHelperFactory(
+  StatusCodes.INTERNAL_SERVER_ERROR,
+  ReasonPhrases.INTERNAL_SERVER_ERROR,
+);

@@ -1,11 +1,17 @@
 import { Router, type Request, type Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import { getErrorString, nextId } from "../server";
-import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
+import {
+  getBadRequest,
+  getInternalServerError,
+  getNotFound,
+  getOk,
+} from "../utils/requestHelpers";
 import User from "../entities/User";
 import users from "../mock/users";
 import { hashPassword, verifyPassword } from "../utils/password";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import authMiddleware from "../middleware/authMiddleware";
 
 const JWT_CONFIG = {
   SECRET: "access_secret",
@@ -204,17 +210,54 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 /**
  * @swagger
  * /api/auth/me:
- *  summary:
- *  description:
- *  content:
- *  responses:
- *    200:
- *      description: Пользователь авторизован
- *      content:
- *        application/json:
- *          schema:
- *            $ref: "#/components/schema/User"
+ *  get:
+ *    summary: Получить данные клиента, если он авторизован
+ *    tags: [User, Auth]
+ *    description: Если клиент авторизован, то вернет информацию о нем
+ *    headers:
+ *      Authorization:
+ *        required: true
+ *    responses:
+ *      500:
+ *        description: Ошибка на стороне сервера
+ *      404:
+ *        description: Пользователь с таким ID не обнаружен
+ *      200:
+ *        description: Пользователь авторизован
+ *        content:
+ *          application/json:
+ *            schema:
+ *              properties:
+ *                id:
+ *                  type: string
+ *                  example: dfas12
+ *                first_name:
+ *                  type: string
+ *                  example: Сергей
+ *                last_name:
+ *                  type: string
+ *                  example: Овчинников
+ *                email:
+ *                  type: string
+ *                password:
+ *                  type: string
  */
-authRouter.get("/me", async (_req, _res) => {});
+authRouter.get(
+  "/me",
+  authMiddleware,
+  async (req: Request & JwtPayload, res: Response) => {
+    const id = req["user"].sub;
+    if (!id) {
+      return getInternalServerError(res);
+    }
+
+    const u = users.find((u) => u.id === id);
+    if (!u) {
+      return getNotFound(res);
+    }
+
+    res.status(StatusCodes.OK).json(u);
+  },
+);
 
 export default authRouter;
