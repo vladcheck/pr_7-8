@@ -2,9 +2,8 @@ import { Router, type Request, type Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import User from "../entities/User";
 import users from "../mock/users";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import authMiddleware from "../middleware/authMiddleware";
-import { getErrorString, nextId } from "../../server";
 import { hashPassword, verifyPassword } from "../utils/password";
 import {
   getBadRequest,
@@ -13,6 +12,7 @@ import {
   getUnauthorized,
 } from "../utils/requestHelpers";
 import JwtSingleton, { TokenType } from "../utils/jwt";
+import { getErrorString, nextId } from "../../../server";
 
 const authRouter: Router = Router();
 
