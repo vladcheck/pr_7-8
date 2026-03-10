@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 
 # etc.
 *.pdf
+.vscode
+.cursor
