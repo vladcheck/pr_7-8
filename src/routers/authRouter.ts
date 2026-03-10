@@ -11,11 +11,7 @@ import {
   getNotFound,
   getInternalServerError,
 } from "../utils/requestHelpers";
-
-const JWT_CONFIG = {
-  SECRET: "access_secret",
-  EXP: 900, // 15m
-};
+import JwtSingleton from "../utils/jwt";
 
 const authRouter: Router = Router();
 
@@ -190,17 +186,11 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return getBadRequest(res, "Invalid credentials.");
   }
 
-  const accessToken = jwt.sign(
-    {
-      sub: u.id,
-      ...Object.entries(u).filter(([k, _]) => {
-        return k !== "id";
-      }),
-    },
-    JWT_CONFIG.SECRET,
-    {
-      expiresIn: 900,
-    },
+  const accessToken = JwtSingleton.grantAccessToken(
+    u.id,
+    Object.entries(u).filter(([k]) => {
+      return k !== "id";
+    }),
   );
 
   return res.status(StatusCodes.OK).json({ accessToken });
