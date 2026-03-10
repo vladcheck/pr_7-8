@@ -10,10 +10,19 @@ import {
   getBadRequest,
   getNotFound,
   getInternalServerError,
+  getUnauthorized,
 } from "../utils/requestHelpers";
-import JwtSingleton from "../utils/jwt";
+import JwtSingleton, { TokenType } from "../utils/jwt";
 
 const authRouter: Router = Router();
+
+function getUserTokenBody(user: User, type: TokenType) {
+  return type === "access"
+    ? Object.entries(user).filter(([k]) => {
+        return k !== "id";
+      })
+    : { first_name: user.first_name };
+}
 
 /**
  * @swagger
@@ -188,12 +197,47 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 
   const accessToken = JwtSingleton.grantAccessToken(
     u.id,
-    Object.entries(u).filter(([k]) => {
-      return k !== "id";
-    }),
+    getUserTokenBody(u, "access"),
   );
+  const refreshToken = JwtSingleton.grantRefreshToken(u.id, {
+    first_name: u.first_name,
+  });
 
-  return res.status(StatusCodes.OK).json({ accessToken });
+  return res.status(StatusCodes.OK).json({ accessToken, refreshToken });
+});
+
+authRouter.post("/refresh", (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return getBadRequest(res, "Refresh token is required");
+  }
+
+  if (JwtSingleton.isTokenValid(refreshToken, "refresh")) {
+    return getUnauthorized(res, "Invalid refresh token");
+  }
+
+  try {
+    const payload = JwtSingleton.verify(refreshToken, "refresh");
+
+    const u = users.find((u) => u.id === payload.sub);
+    if (!u) {
+      return getUnauthorized(res, "User not found");
+    }
+
+    const { newAccessToken, newRefreshToken } = JwtSingleton.rotateTokens(
+      refreshToken,
+      u.id,
+      getUserTokenBody(u, "access"),
+      getUserTokenBody(u, "refresh"),
+    );
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    return getUnauthorized(res, "Invalid or expired refresh token");
+  }
 });
 
 /**

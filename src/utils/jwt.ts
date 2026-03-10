@@ -1,24 +1,44 @@
 import jwt from "jsonwebtoken";
 
-const JWT_CONFIG = {
-  ACCESS_SECRET: "access_secret",
-  REFRESH_SECRET: "refresh_secret",
-  EXP: "15m",
-  REFRESH_EXP: "28d",
+export type TokenType = "access" | "refresh";
+type TokenBody = { [key: string]: any };
+
+interface JwtConfig {
+  access: {
+    secret: string;
+    expiresIn: string | number;
+  };
+  refresh: {
+    secret: string;
+    expiresIn: string | number;
+  };
+}
+
+const JWT_CONFIG: JwtConfig = {
+  access: {
+    secret: "access_secret",
+    expiresIn: "15m",
+  },
+  refresh: {
+    secret: "refresh_secret",
+    expiresIn: "28d",
+  },
 };
+
+const refreshTokens = new Set();
 
 class JwtSingleton {
   grantAccessToken(
     sub: string,
-    body: [string, any][],
-    expiresIn: any = JWT_CONFIG.REFRESH_EXP,
+    body: TokenBody,
+    expiresIn: any = JWT_CONFIG.access.expiresIn,
   ): string {
     return jwt.sign(
       {
         sub,
         ...body,
       },
-      JWT_CONFIG.ACCESS_SECRET,
+      JWT_CONFIG.access.secret,
       {
         expiresIn: expiresIn,
       },
@@ -27,19 +47,47 @@ class JwtSingleton {
 
   grantRefreshToken(
     sub: string,
-    body: [string, any][],
-    expiresIn: any = JWT_CONFIG.REFRESH_EXP,
+    body: TokenBody,
+    expiresIn: any = JWT_CONFIG.access.expiresIn,
   ): string {
     return jwt.sign(
       {
         sub,
         ...body,
       },
-      JWT_CONFIG.REFRESH_SECRET,
+      JWT_CONFIG.access.secret,
       {
         expiresIn,
       },
     );
+  }
+
+  verify(token: string, type: TokenType) {
+    const secret = JWT_CONFIG[type].secret;
+    return jwt.verify(token, secret);
+  }
+
+  isTokenValid(token: string, type: TokenType) {
+    if (type === "refresh") {
+      return refreshTokens.has(token);
+    } else {
+      return true; // TODO: добавить условия
+    }
+  }
+
+  rotateTokens(
+    refreshToken: string,
+    sub: string,
+    accessTokenBody: TokenBody,
+    refreshTokenBody: TokenBody,
+  ) {
+    refreshTokens.delete(refreshToken);
+
+    const newAccessToken = this.grantAccessToken(sub, accessTokenBody);
+    const newRefreshToken = this.grantRefreshToken(sub, refreshTokenBody);
+
+    refreshTokens.add(newRefreshToken);
+    return { newAccessToken, newRefreshToken };
   }
 }
 

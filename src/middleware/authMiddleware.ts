@@ -1,8 +1,7 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import type { Request, Response } from "express";
 import { getUnauthorized } from "../utils/requestHelpers";
-
-const JWT_SECRET = "access_secret";
+import JwtSingleton from "../utils/jwt";
 
 export default function authMiddleware(
   req: Request & JwtPayload,
@@ -16,7 +15,7 @@ export default function authMiddleware(
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = JwtSingleton.verify(token, "access");
     req["user"] = payload;
     next();
   } catch (err) {
