@@ -21,4 +21,5 @@ npm run dev
 | `/api/users/:id`     | `GET`                  | Нет                |
 | `/api/auth/register` | `POST`                 | Нет                |
 | `/api/auth/login`    | `POST`                 | Да                 |
+| `/api/auth/refresh`    | `POST`                 | Да                 |
 | `/api/auth/me`       | `GET`                  | Да                 |
