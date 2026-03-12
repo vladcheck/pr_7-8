@@ -4,9 +4,17 @@ const HOST = "http://localhost";
 const PORT = 3000;
 const URL = `${HOST}:${PORT}/api`;
 
+const apiClient = axios.create({
+  baseURL: URL,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
+
 class ApiAdapter {
   async getUserById(id: string) {
-    const response = await axios.get(`${URL}/users/${id}`);
+    const response = await apiClient.get(`/users/${id}`);
     return response;
   }
 
@@ -16,7 +24,7 @@ class ApiAdapter {
     email: string;
     password: string;
   }) {
-    const response = await axios.post(`${URL}/auth/register`, {
+    const response = await apiClient.post(`/auth/register`, {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
@@ -26,32 +34,32 @@ class ApiAdapter {
   }
 
   async updateUserById(id: string, data: object) {
-    const response = await axios.post(`${URL}/users/${id}`, data);
+    const response = await apiClient.post(`/users/${id}`, data);
     return response;
   }
 
   async deleteUserById(id: string) {
-    const response = await axios.delete(`${URL}/users/${id}`);
+    const response = await apiClient.delete(`/users/${id}`);
     return response;
   }
 
   async getProductById(id: string) {
-    const response = await axios.get(`${URL}/products/${id}`);
+    const response = await apiClient.get(`/products/${id}`);
     return response;
   }
 
   async createProduct(data: object) {
-    const response = await axios.post(`${URL}/products`, data);
+    const response = await apiClient.post(`/products`, data);
     return response;
   }
 
   async updateProductById(id: string, data: object) {
-    const response = await axios.post(`${URL}/products/${id}`, data);
+    const response = await apiClient.post(`/products/${id}`, data);
     return response;
   }
 
   async deleteProductById(id: string) {
-    const response = await axios.delete(`${URL}/products/${id}`);
+    const response = await apiClient.delete(`/products/${id}`);
     return response;
   }
 }
