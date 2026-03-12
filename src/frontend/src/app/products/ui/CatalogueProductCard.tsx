@@ -9,7 +9,7 @@ export default function CatalogueProductCard({ p }: { p: Product }) {
       flexDir="col"
       justify="center"
       align="center"
-      className="h-full w-full border-3 border-red-900"
+      className="h-full w-full px-1 shadow-2xs"
     >
       <FlexContainer flexDir="col" justify="center" className="w-full">
         <Link to={`/products/${p.id}`}>
