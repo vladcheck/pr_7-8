@@ -43,6 +43,11 @@ class ApiAdapter {
     return response;
   }
 
+  async getProducts() {
+    const response = await apiClient.get("/products");
+    return response;
+  }
+
   async getProductById(id: string) {
     const response = await apiClient.get(`/products/${id}`);
     return response;
