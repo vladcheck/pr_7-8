@@ -1,7 +1,7 @@
 import { Link } from "react-router";
-import Product from "../../entities/Product.ts";
-import FlexContainer from "../../shared/ui/FlexContainer.tsx";
-import Price from "../../shared/ui/Price.tsx";
+import Product from "../../../entities/Product.ts";
+import FlexContainer from "../../../shared/ui/FlexContainer.tsx";
+import Price from "../../../shared/ui/Price.tsx";
 
 export default function CatalogueProductCard({ p }: { p: Product }) {
   return (
