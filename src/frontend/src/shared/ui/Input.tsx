@@ -1,4 +1,8 @@
-import type { BaseHTMLAttributes, HTMLInputTypeAttribute } from "react";
+import type {
+  BaseHTMLAttributes,
+  ChangeEvent,
+  HTMLInputTypeAttribute,
+} from "react";
 import cn from "../utils/cn";
 import InputWrapper from "./InputWrapper";
 
@@ -8,7 +12,7 @@ export default function Input({
   ...props
 }: {
   value?: string | number;
-  onChange: () => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   required: boolean;
   type: HTMLInputTypeAttribute;
 } & BaseHTMLAttributes<HTMLInputElement>) {

@@ -3,7 +3,6 @@ import authRouter from "./authRouter";
 import usersRouter from "./usersRouter";
 import productsRouter from "./productsRouter";
 import { getOk } from "../utils/requestHelpers";
-
 const apiRouter: Router = Router();
 apiRouter.use("/api/auth", authRouter);
 apiRouter.use("/api/users", usersRouter);

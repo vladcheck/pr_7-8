@@ -1,4 +1,4 @@
-import type { BaseHTMLAttributes } from "react";
+import type { BaseHTMLAttributes, ChangeEvent } from "react";
 import Input from "./Input";
 
 export default function TextInput({
@@ -7,7 +7,7 @@ export default function TextInput({
   ...props
 }: {
   value?: string | number;
-  onChange: () => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   required: boolean;
 } & BaseHTMLAttributes<HTMLInputElement>) {
   return <Input {...props} type="text" value={value} onChange={onChange} />;

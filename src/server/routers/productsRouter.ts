@@ -5,7 +5,6 @@ import originalProducts from "../mock/products";
 import authMiddleware from "../middleware/authMiddleware";
 import { getErrorString, nextId } from "../server";
 import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
-import { getErrorString, nextId } from "../server";
 
 const productsRouter: Router = Router();
 
