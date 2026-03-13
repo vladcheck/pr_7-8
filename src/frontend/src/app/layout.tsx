@@ -6,6 +6,7 @@ import FlexContainer from "../shared/ui/FlexContainer";
 import { ToastContainer } from "react-toastify";
 import useApi from "../features/api/useApi";
 import { useEffect, useState } from "react";
+import ProfileImage from "../shared/ui/ProfileImage";
 
 export default function RootLayout() {
   const api = useApi();
@@ -36,7 +37,7 @@ export default function RootLayout() {
             <Link to={"/login"}>Войти</Link>
           </FlexContainer>
         ) : (
-          <Link to={"/profile"}>Профиль</Link>
+          <ProfileImage to={"/profile"} />
         )}
       </Header>
       <Main className="flex flex-col justify-center items-center">
