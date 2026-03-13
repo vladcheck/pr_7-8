@@ -5,10 +5,12 @@ import User from "../../entities/User";
 import UserInfoCard from "./ui/UserInfoCard";
 import AccountActions from "./ui/AccountActions";
 import FlexContainer from "../../shared/ui/FlexContainer";
+import useNotify from "../../features/notifications/useNotify";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const api = useApi();
+  const notifier = useNotify();
   const [userInfo, setUserInfo] = useState<undefined | User>();
 
   useEffect(() => {
@@ -33,7 +35,30 @@ export default function ProfilePage() {
 
   const onLogOut = () => {};
 
-  const onDeleteAccount = () => {};
+  const onDeleteAccount = () => {
+    if (!userInfo) return;
+    const confirm = window.confirm(
+      "Вы точно хотите удалить свой аккаунт? Это действие нельзя отменить!",
+    );
+    if (!confirm) return;
+    api
+      .deleteUserById(userInfo.id)
+      .then((response) => {
+        notifier.notifySuccess("Аккаунт удален.");
+        setTimeout(() => {
+          window.location.reload();
+          navigate("/shop");
+        }, 1000);
+        console.log(response);
+      })
+      .catch((response) => {
+        notifier.notifyError(
+          "Не удалось удалить аккаунт, попробуйте позже.",
+          3000,
+        );
+        console.error(response);
+      });
+  };
 
   return (
     userInfo && (

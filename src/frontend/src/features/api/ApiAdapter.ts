@@ -80,11 +80,13 @@ class ApiAdapter {
   async _refreshTokens() {
     const refreshToken = localStorage.getItem("refreshToken");
     const response = await apiClient.post("/auth/refresh", { refreshToken });
-    const { newAccessToken, newRefreshToken } = response.data;
-    storeTokens({
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    });
+    if (response.status !== HttpStatusCode.Unauthorized) {
+      const { newAccessToken, newRefreshToken } = response.data;
+      storeTokens({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
+    }
     return response;
   }
 
@@ -114,6 +116,12 @@ class ApiAdapter {
 
   async deleteUserById(id: string) {
     const response = await apiClient.delete(`/users/${id}`);
+    if (
+      response.status !== HttpStatusCode.BadRequest &&
+      response.status !== HttpStatusCode.Unauthorized
+    ) {
+      localStorage.clear();
+    }
     return response;
   }
 
