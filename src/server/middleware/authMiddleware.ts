@@ -10,8 +10,11 @@ export default function authMiddleware(
 ) {
   const header = req.headers.authorization || "";
   const [scheme, token] = header.split(" ");
-  if (scheme !== "Bearer" || !token) {
-    return getUnauthorized(res, "Missing or invalid Authorization header");
+  if (scheme !== "Bearer") {
+    return getUnauthorized(res, "Wrong auth schema, expected 'Bearer'");
+  }
+  if (!token) {
+    return getUnauthorized(res, "Missing access token");
   }
 
   try {
