@@ -1,19 +1,20 @@
-import { Router, type Request, type Response } from "express";
+import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
+import path from "path";
 import User from "../entities/User";
-import authMiddleware from "../middleware/authMiddleware";
+import { getErrorString, nextId } from "../../server";
+import dbAdapter from "../utils/DbAdapter";
+import jwtSingleton, { TokenType } from "../utils/jwt";
 import { hashPassword, verifyPassword } from "../utils/password";
+import type { Response, Request } from "express";
 import {
   getBadRequest,
   getNotFound,
-  getInternalServerError,
   getUnauthorized,
+  getInternalServerError,
 } from "../utils/requestHelpers";
-import JwtSingleton, { TokenType } from "../utils/jwt";
-import { getErrorString, nextId } from "../server";
-import { JwtPayload } from "jsonwebtoken";
-import dbAdapter from "../utils/DbAdapter";
-import path from "node:path";
+import authMiddleware from "../middleware/authMiddleware";
 
 function sanitize<T extends { hash: string }>(value: T): Omit<T, "hash"> {
   const valueCopy = Object.assign(value);
@@ -218,11 +219,11 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return getBadRequest(res, "Invalid credentials.");
   }
 
-  const accessToken = JwtSingleton.grantAccessToken(
+  const accessToken = jwtSingleton.grantAccessToken(
     u.id,
     getUserTokenBody(u, "access"),
   );
-  const refreshToken = JwtSingleton.grantRefreshToken(u.id, {
+  const refreshToken = jwtSingleton.grantRefreshToken(u.id, {
     firstName: u.firstName,
   });
 
@@ -238,12 +239,12 @@ authRouter.post("/refresh", async (req: Request, res: Response) => {
     return getBadRequest(res, "Refresh token is required");
   }
 
-  if (JwtSingleton.isTokenValid(refreshToken, "refresh")) {
+  if (jwtSingleton.isTokenValid(refreshToken, "refresh")) {
     return getUnauthorized(res, "Invalid refresh token");
   }
 
   try {
-    const payload = JwtSingleton.verify(refreshToken, "refresh");
+    const payload = jwtSingleton.verify(refreshToken, "refresh");
 
     const entries: User[] = await dbAdapter.readEntries(userPath);
     const u = entries.find((u) => u.id === payload.sub);
@@ -251,7 +252,7 @@ authRouter.post("/refresh", async (req: Request, res: Response) => {
       return getNotFound(res, "user not found");
     }
 
-    const { newAccessToken, newRefreshToken } = JwtSingleton.rotateTokens(
+    const { newAccessToken, newRefreshToken } = jwtSingleton.rotateTokens(
       refreshToken,
       u.id,
       getUserTokenBody(u, "access"),

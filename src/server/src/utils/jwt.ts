@@ -91,4 +91,5 @@ class JwtSingleton {
   }
 }
 
-export default new JwtSingleton();
+const jwtSingleton = new JwtSingleton();
+export default jwtSingleton;

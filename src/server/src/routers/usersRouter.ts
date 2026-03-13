@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
-import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
-import { StatusCodes } from "http-status-codes";
 import { Router } from "express";
+import { StatusCodes } from "http-status-codes";
+import path from "path";
+import User from "../entities/User";
 import authMiddleware from "../middleware/authMiddleware";
 import dbAdapter from "../utils/DbAdapter";
-import path from "node:path";
-import User from "../entities/User";
+import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
+import type { Response, Request } from "express";
 
 const usersRouter: Router = Router();
 const userPath = path.resolve("db", "users.json");

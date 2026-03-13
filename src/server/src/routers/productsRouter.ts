@@ -1,16 +1,17 @@
-import { Router, type Request, type Response } from "express";
+import { Router } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import path from "path";
+import { getErrorString, nextId } from "../../server";
 import Product from "../entities/Product";
 import authMiddleware from "../middleware/authMiddleware";
-import { getErrorString, nextId } from "../server";
+import dbAdapter from "../utils/DbAdapter";
 import {
   getBadRequest,
   getInternalServerError,
   getNotFound,
   getOk,
 } from "../utils/requestHelpers";
-import dbAdapter from "../utils/DbAdapter";
-import path from "node:path";
+import type { Response, Request } from "express";
 
 const productsRouter: Router = Router();
 const productsPath = path.resolve("db", "products.json");
