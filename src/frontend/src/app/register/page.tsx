@@ -34,7 +34,8 @@ enum ReducerAction {
 
 function reducer(
   state: FormState,
-  action: Partial<FormState> & { type: ReducerAction },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: { type: ReducerAction; [key: string]: any },
 ) {
   switch (action.type) {
     case ReducerAction.SET_FIRST_NAME:
