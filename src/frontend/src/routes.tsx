@@ -6,6 +6,7 @@ import Page from "./app/page.tsx";
 import ProductsPage from "./app/products/page.tsx";
 import ProductPage from "./app/products/[:id]/page.tsx";
 import CreateProductPage from "./app/products/create/page.tsx";
+import NotFoundPage from "./app/notFound.tsx";
 
 export default function SiteRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function SiteRoutes() {
         <Route path="/products/create" element={<CreateProductPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );
