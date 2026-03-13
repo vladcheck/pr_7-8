@@ -60,7 +60,6 @@ export default function LoginPage() {
           console.log(response);
           notifier.notifySuccess(`Вы вошли в аккаунт ${formState.email}`);
           setTimeout(() => {
-            window.location.reload();
             navigate("/shop");
           }, 2000);
         })

@@ -33,7 +33,23 @@ export default function ProfilePage() {
       });
   }, [api]);
 
-  const onLogOut = () => {};
+  const onLogOut = () => {
+    if (!userInfo) return;
+    const confirm = window.confirm("Вы точно хотите выйти из аккаунта?");
+    if (!confirm) return;
+    api
+      .logOut()
+      .then(() => {
+        navigate("/shop");
+      })
+      .catch((error) => {
+        notifier.notifyError(
+          "Не удалось выйти из аккаунта, попробуйте позже.",
+          3000,
+        );
+        console.error(error);
+      });
+  };
 
   const onDeleteAccount = () => {
     if (!userInfo) return;
@@ -46,7 +62,6 @@ export default function ProfilePage() {
       .then((response) => {
         notifier.notifySuccess("Аккаунт удален.");
         setTimeout(() => {
-          window.location.reload();
           navigate("/shop");
         }, 1000);
         console.log(response);

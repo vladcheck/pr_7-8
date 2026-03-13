@@ -67,6 +67,12 @@ class ApiAdapter {
     return response;
   }
 
+  async logOut() {
+    const response = await apiClient.post(`/auth/logout`, {});
+    localStorage.clear();
+    return response;
+  }
+
   async login(data: { email: string; password: string }) {
     const response = await apiClient.post("/auth/login", data);
     if (response.status === HttpStatusCode.Ok) {
