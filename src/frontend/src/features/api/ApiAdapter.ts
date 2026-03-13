@@ -37,6 +37,15 @@ class ApiAdapter {
     return response;
   }
 
+  async getCurrentUserInfo() {
+    if (localStorage.getItem("uid")) {
+      const uid = localStorage.getItem("uid");
+      const response = await apiClient.get(`/users/${uid}`);
+      return response;
+    }
+    return null;
+  }
+
   async createUser(data: {
     firstName: string;
     lastName: string;
