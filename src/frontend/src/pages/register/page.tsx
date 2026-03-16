@@ -1,4 +1,4 @@
-import { useReducer, useRef, type ChangeEvent } from "react";
+import { useReducer, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import SubmitButton from "@/shared/ui/SubmitButton";
 import FlexContainer from "@/shared/ui/FlexContainer";
@@ -6,14 +6,8 @@ import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import TextInput from "@/shared/ui/TextInput";
 import useApi from "@/features/api/useApi";
-
-interface FormState {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  submitPassword: string;
-}
+import { FormState } from "./types";
+import reducer from "./reducer";
 
 const initialFormState: FormState = {
   email: "",
@@ -22,51 +16,6 @@ const initialFormState: FormState = {
   password: "",
   submitPassword: "",
 };
-
-enum ReducerAction {
-  "SET_FIRST_NAME",
-  "SET_LAST_NAME",
-  "SET_EMAIL",
-  "SET_PASSWORD",
-  "SET_SUBMIT_PASSWORD",
-}
-
-function reducer(
-  state: FormState,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  action: { type: ReducerAction; [key: string]: any },
-) {
-  switch (action.type) {
-    case ReducerAction.SET_FIRST_NAME:
-      return {
-        ...state,
-        firstName: action.firstName,
-      };
-    case ReducerAction.SET_LAST_NAME:
-      return {
-        ...state,
-        lastName: action.lastName,
-      };
-    case ReducerAction.SET_EMAIL:
-      return {
-        ...state,
-        email: action.email,
-      };
-    case ReducerAction.SET_PASSWORD:
-      return {
-        ...state,
-        password: action.password,
-      };
-    case ReducerAction.SET_SUBMIT_PASSWORD:
-      return {
-        ...state,
-        submitPassword: action.submitPassword,
-      };
-    default:
-      console.error("Undefined action");
-      return state;
-  }
-}
 
 export default function RegisterPage() {
   const api = useApi();
@@ -100,10 +49,11 @@ export default function RegisterPage() {
         <LabelInputBlock htmlFor="firstName" label="Имя">
           <TextInput
             value={formState.firstName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_FIRST_NAME,
-                firstName: e.target.value,
+                type: "SET_VALUE",
+                field: "firstName",
+                value: e.target.value,
               });
             }}
             id="firstName"
@@ -113,10 +63,11 @@ export default function RegisterPage() {
         <LabelInputBlock htmlFor="lastName" label="Фамилия">
           <TextInput
             value={formState.lastName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_LAST_NAME,
-                lastName: e.target.value,
+                type: "SET_VALUE",
+                field: "lastName",
+                value: e.target.value,
               });
             }}
             id="lastName"
@@ -127,10 +78,11 @@ export default function RegisterPage() {
           <Input
             type="email"
             value={formState.email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_EMAIL,
-                email: e.target.value,
+                type: "SET_VALUE",
+                field: "email",
+                value: e.target.value,
               });
             }}
             id="email"
@@ -141,10 +93,11 @@ export default function RegisterPage() {
           <Input
             type="password"
             value={formState.password}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_PASSWORD,
-                password: e.target.value,
+                type: "SET_VALUE",
+                field: "password",
+                value: e.target.value,
               });
             }}
             id="password"
@@ -155,10 +108,11 @@ export default function RegisterPage() {
           <Input
             type="password"
             value={formState.submitPassword}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_SUBMIT_PASSWORD,
-                submitPassword: e.target.value,
+                type: "SET_VALUE",
+                field: "submitPassword",
+                value: e.target.value,
               });
             }}
             id="submitPassword"
