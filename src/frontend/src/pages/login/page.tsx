@@ -6,40 +6,13 @@ import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import useApi from "@/features/api/useApi";
 import useNotify from "@/features/notifications/useNotify";
-
-interface FormState {
-  email: string;
-  password: string;
-}
+import { FormState } from "./types";
+import reducer from "./reducer";
 
 const initialFormState: FormState = {
   email: "",
   password: "",
 };
-
-enum ReducerAction {
-  "SET_EMAIL",
-  "SET_PASSWORD",
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function reducer(state: FormState, action: any) {
-  switch (action.type) {
-    case ReducerAction.SET_EMAIL:
-      return {
-        ...state,
-        email: action.email,
-      };
-    case ReducerAction.SET_PASSWORD:
-      return {
-        ...state,
-        password: action.password,
-      };
-    default:
-      console.error("Undefined action");
-      return state;
-  }
-}
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -84,8 +57,9 @@ export default function LoginPage() {
             value={formState.email}
             onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_EMAIL,
-                email: e.target.value,
+                type: "SET_VALUE",
+                field: "email",
+                value: e.target.value,
               });
             }}
             id="email"
@@ -98,8 +72,9 @@ export default function LoginPage() {
             value={formState.password}
             onChange={(e) => {
               dispatch({
-                type: ReducerAction.SET_PASSWORD,
-                password: e.target.value,
+                type: "SET_VALUE",
+                field: "password",
+                value: e.target.value,
               });
             }}
             id="password"
