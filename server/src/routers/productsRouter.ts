@@ -1,18 +1,19 @@
 import { Router } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import path from "path";
-import { getErrorString, nextId } from "../../server";
 import { ProductEntity } from "../entities/Product";
 import authMiddleware from "../middleware/authMiddleware";
 import dbFacade from "../utils/DbFacade";
 import {
   getBadRequest,
+  getErrorString,
   getInternalServerError,
   getNotFound,
   getOk,
 } from "../utils/requestHelpers";
 import type { Response, Request } from "express";
 import roleMiddleware from "../middleware/roleMiddleware";
+import nextId from "../utils/nextId";
 
 const productsRouter: Router = Router();
 const productsPath = path.resolve(__dirname, "../db/products.json");
@@ -190,7 +191,7 @@ productsRouter
 
     return res.status(StatusCodes.OK).json(product);
   })
-  .put(
+  .post(
     "/:id",
     authMiddleware,
     roleMiddleware(["seller"]),
@@ -208,12 +209,12 @@ productsRouter
       }
 
       const p = products[productIndex]!;
-      const b = req.body;
+      const b: Record<keyof typeof p, string> = req.body;
 
       if (b.title) p.title = b.title;
       if (b.description) p.description = b.description;
       if (b.price) {
-        if (isNaN(b.price) || parseFloat(b.price) < 0) {
+        if (isNaN(parseFloat(b.price)) || parseFloat(b.price) < 0) {
           return getBadRequest(
             res,
             getErrorString(
@@ -227,6 +228,12 @@ productsRouter
         }
       }
 
+      if (!b.imageSrc) {
+        return getBadRequest(res, "image source is empty");
+      } else {
+        p.imageSrc = b.imageSrc;
+        p.imageAlt = b.imageAlt ? b.imageAlt : "";
+      }
       // products = products.splice(productIndex, 1, p); TODO: implement dbFacade.updateEntry()
       return getOk(res);
     },

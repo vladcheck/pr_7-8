@@ -3,21 +3,15 @@ import { Product } from "@/entities/Product";
 import CatalogueProductCard from "./ui/CatalogueProductCard";
 import ApiContext from "@/features/api/ApiContext";
 import FlexContainer from "@/shared/ui/FlexContainer";
-import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import useDebouncer from "@/shared/hooks/useDebouncer";
-
-const FILTER_CONFIG = {
-  price: {
-    min: 0,
-    max: 10e4,
-    step: 10,
-  },
-};
+import Sidebar from "./ui/Sidebar";
+import { Filters } from "./types";
+import { FILTER_CONFIG } from "./const";
 
 export default function ProductsPage() {
   const { api } = useContext(ApiContext);
   const [products, setProducts] = useState<Product[]>([]);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     price: {
       min: FILTER_CONFIG.price.min,
       max: FILTER_CONFIG.price.max,
@@ -51,46 +45,7 @@ export default function ProductsPage() {
 
   return (
     <FlexContainer className="gap-4 pt-6">
-      <aside className="p-2 flex h-min flex-col min-w-50 border border-gray-200">
-        <FlexContainer flexDir="col" className="gap-2">
-          <LabelInputBlock htmlFor="min-price" label="Минимальная цена">
-            <span>{filters.price.min}</span>
-            <input
-              type="range"
-              name="min-price"
-              id="min-price"
-              value={filters.price.min}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  price: { ...filters.price, min: parseInt(e.target.value) },
-                })
-              }
-              min={FILTER_CONFIG.price.min}
-              max={filters.price.max}
-              step={FILTER_CONFIG.price.step}
-            />
-          </LabelInputBlock>
-          <LabelInputBlock htmlFor="min-price" label="Максимальная цена">
-            <span>{filters.price.max}</span>
-            <input
-              type="range"
-              name="min-price"
-              id="min-price"
-              value={filters.price.max}
-              onChange={(e) =>
-                setFilters({
-                  ...filters,
-                  price: { ...filters.price, max: parseInt(e.target.value) },
-                })
-              }
-              min={filters.price.min}
-              max={FILTER_CONFIG.price.max}
-              step={FILTER_CONFIG.price.step}
-            />
-          </LabelInputBlock>
-        </FlexContainer>
-      </aside>
+      <Sidebar filters={filters} setFilters={setFilters} />
       <div className="w-300">
         {filteredProducts.length ? (
           <div className="flex-1 grid grid-cols-4 p-2 gap-2 justify-items-center justify-center">

@@ -1,5 +1,6 @@
 import type { Response } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import path from "node:path";
 
 const getRequestHelperFactory = (status: number, reason: string) => {
   return (res: Response, send?: any) => {
@@ -27,3 +28,6 @@ export const getInternalServerError = getRequestHelperFactory(
   StatusCodes.INTERNAL_SERVER_ERROR,
   ReasonPhrases.INTERNAL_SERVER_ERROR,
 );
+
+export const getErrorString = (msg: string, value: any, expected?: string) =>
+  `${msg} (${value}).${expected && ` Ожидалось: ${expected}`}`;

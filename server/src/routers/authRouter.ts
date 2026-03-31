@@ -3,7 +3,6 @@ import { StatusCodes } from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import path from "path";
 import { UserEntity, UserRequestBody } from "../entities/User";
-import { getErrorString, nextId } from "../../server";
 import dbFacade from "../utils/DbFacade";
 import jwtSingleton, { TokenType } from "../utils/jwt";
 import { hashPassword, verifyPassword } from "../utils/password";
@@ -13,8 +12,10 @@ import {
   getNotFound,
   getUnauthorized,
   getInternalServerError,
+  getErrorString,
 } from "../utils/requestHelpers";
 import authMiddleware from "../middleware/authMiddleware";
+import nextId from "../utils/nextId";
 
 function sanitize<T extends { hash: string }>(value: T): Omit<T, "hash"> {
   const valueCopy = Object.assign(value);

@@ -6,8 +6,6 @@ const HOST = "http://localhost";
 const PORT = 3000;
 const URL = `${HOST}:${PORT}/api`;
 
-type DeleteSelfParams = { id: string };
-
 const apiClient = axios.create({
   baseURL: URL,
   headers: {

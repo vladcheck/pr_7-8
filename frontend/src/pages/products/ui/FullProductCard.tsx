@@ -17,7 +17,7 @@ export default function FullProductCard({
   return (
     <FlexContainer flexDir="col" className="gap-4">
       <FlexContainer className="gap-2">
-        <ProductImageCarousel images={p.images || []} />
+        <ProductImageCarousel src={p.imageSrc} alt={p.imageAlt} />
         <FlexContainer flexDir="col" className="bg-gray-100 rounded-2xl p-4">
           <Price>{p.price}</Price>
           <h1 className="text-[1.4rem] max-w-100 wrap-break-word break-all">
@@ -65,15 +65,15 @@ export default function FullProductCard({
 }
 
 function ProductImageCarousel({
-  images,
+  src,
+  alt = "",
 }: {
-  images: { src: string; alt: string }[];
+  src?: string;
+  alt?: string;
 }) {
   return (
     <div className="carousel overflow-x-scroll overflow-y-hidden bg-gray-100 rounded-2xl aspect-auto p-4 min-w-50">
-      {images.map((img) => (
-        <img src={img.src} alt={img.alt} />
-      ))}
+      {src && <img src={src} alt={alt} />}
     </div>
   );
 }

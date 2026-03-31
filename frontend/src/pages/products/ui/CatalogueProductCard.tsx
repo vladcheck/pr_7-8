@@ -13,8 +13,12 @@ export default function CatalogueProductCard({ p }: { p: Product }) {
     >
       <FlexContainer flexDir="col" justify="center" className="w-full">
         <Link to={`/products/${p.id}`}>
-          {p.images?.[0] ? (
-            <img className="min-w-40 w-max aspect-4/5" src="" alt="" />
+          {p.imageSrc ? (
+            <img
+              className="min-w-40 w-max aspect-4/5"
+              src={p.imageSrc}
+              alt={p.imageAlt}
+            />
           ) : (
             <div className="min-w-40 w-max aspect-4/5 bg-gray-200"></div>
           )}
