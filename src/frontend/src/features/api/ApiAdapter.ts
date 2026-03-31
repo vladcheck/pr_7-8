@@ -125,6 +125,15 @@ class ApiAdapter {
     return false;
   }
 
+  async resetPassword(data: object) {
+    const currentUserInfo = await this.getCurrentUserInfo();
+    const response: AxiosResponse = await apiClient.post(
+      `/users/reset/${currentUserInfo?.data.id}`,
+      data,
+    );
+    return response;
+  }
+
   async updateUserById(id: string, data: object) {
     const response: AxiosResponse = await apiClient.post(`/users/${id}`, data);
     return response;

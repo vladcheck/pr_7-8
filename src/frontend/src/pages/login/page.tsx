@@ -21,7 +21,7 @@ export default function LoginPage() {
   const api = useApi();
   const [formState, dispatch] = useReducer(reducer, initialFormState);
 
-  const onSubmit = async () => {
+  const onSubmit = () => {
     if (
       formRef.current?.checkValidity() &&
       formState.email &&

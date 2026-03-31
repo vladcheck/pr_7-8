@@ -148,3 +148,4 @@ vite.config.ts.timestamp-*
 .vscode
 .cursor
 .DS_Store
+**/db
