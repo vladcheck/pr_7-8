@@ -8,13 +8,15 @@ import TextInput from "@/shared/ui/TextInput";
 import useApi from "@/features/api/useApi";
 import { FormState } from "./types";
 import reducer from "./reducer";
+import { UserRole } from "@root-shared/types/User";
 
 const initialFormState: FormState = {
-  email: "",
   firstName: "",
   lastName: "",
   password: "",
   submitPassword: "",
+  email: "",
+  roles: ["user"],
 };
 
 export default function RegisterPage() {
@@ -46,6 +48,30 @@ export default function RegisterPage() {
         className="form flex flex-col justify-center items-center gap-2"
         id="register-form"
       >
+        <LabelInputBlock htmlFor="role" label="Роль">
+          <select
+            name="role"
+            id="role"
+            onChange={(e) => {
+              dispatch({
+                type: "SET_VALUE",
+                field: "roles",
+                value: [
+                  ...formState.roles,
+                  ...[...e.target.selectedOptions].map(
+                    (opt) => opt.value as UserRole,
+                  ),
+                ],
+              });
+            }}
+            defaultValue={["user"]}
+            multiple
+          >
+            <option value="user">Обычный пользователь</option>
+            <option value="admin">Администратор</option>
+            <option value="seller">Продавец</option>
+          </select>
+        </LabelInputBlock>
         <LabelInputBlock htmlFor="firstName" label="Имя">
           <TextInput
             value={formState.firstName}
@@ -130,6 +156,7 @@ export default function RegisterPage() {
           Зарегистрироваться
         </SubmitButton>
         <Link to="/login">Войти</Link>
+        <Link to="/forgot-password">Забыли пароль?</Link>
       </FlexContainer>
     </FlexContainer>
   );
