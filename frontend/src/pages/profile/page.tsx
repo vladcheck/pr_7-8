@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [userInfo, setUserInfo] = useState<undefined | UserResponse>();
 
   useEffect(() => {
-    api.isLoggedIn().then((isLoggedIn) => {
+    api.isLoggedIn().then((isLoggedIn: boolean) => {
       if (!isLoggedIn) {
         navigate("/login");
       }
@@ -24,11 +24,11 @@ export default function ProfilePage() {
   useEffect(() => {
     api
       .getCurrentUserInfo()
-      .then((response) => {
+      .then((response: any) => {
         if (!response || !response.data) throw response;
         setUserInfo(response.data);
       })
-      .catch((error) => {
+      .catch((error: string) => {
         console.error(error);
       });
   }, [api]);
@@ -42,7 +42,7 @@ export default function ProfilePage() {
       .then(() => {
         navigate("/shop");
       })
-      .catch((error) => {
+      .catch((error: string) => {
         notifier.notifyError(
           "Не удалось выйти из аккаунта, попробуйте позже.",
           3000,
@@ -58,20 +58,20 @@ export default function ProfilePage() {
     );
     if (!confirm) return;
     api
-      .deleteUserById(userInfo.id)
-      .then((response) => {
+      .deleteSelf()
+      .then((response: any) => {
         notifier.notifySuccess("Аккаунт удален.");
         setTimeout(() => {
           navigate("/shop");
         }, 1000);
         console.log(response);
       })
-      .catch((response) => {
+      .catch((error: string) => {
         notifier.notifyError(
-          "Не удалось удалить аккаунт, попробуйте позже.",
+          `Не удалось удалить аккаунт, попробуйте позже. ${error}`,
           3000,
         );
-        console.error(response);
+        console.error(error);
       });
   };
 

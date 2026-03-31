@@ -9,10 +9,15 @@ export interface FormState {
   roles: UserRole[];
 }
 
-export type ReducerAction = {
-  [K in keyof FormState]: {
-    type: "SET_VALUE";
-    field: K;
-    value: FormState[K];
-  };
-}[keyof FormState];
+export type ReducerAction =
+  | {
+      [K in keyof FormState]: {
+        type: "SET_VALUE";
+        field: K;
+        value: FormState[K];
+      };
+    }[keyof FormState]
+  | {
+      type: "SET_STATE";
+      state: FormState;
+    };

@@ -4,7 +4,7 @@ import path from "path";
 import { getErrorString, nextId } from "../../server";
 import { ProductEntity } from "../entities/Product";
 import authMiddleware from "../middleware/authMiddleware";
-import dbAdapter from "../utils/DbAdapter";
+import dbFacade from "../utils/DbFacade";
 import {
   getBadRequest,
   getInternalServerError,
@@ -88,7 +88,7 @@ const productsPath = path.resolve(__dirname, "../db/products.json");
  */
 productsRouter
   .get("/", async (_req: Request, res: Response) => {
-    const entries: ProductEntity[] = await dbAdapter.readEntries(productsPath);
+    const entries: ProductEntity[] = await dbFacade.readEntries(productsPath);
     return res.status(StatusCodes.OK).json(entries);
   })
   .post("/", async (req: Request, res: Response) => {
@@ -119,7 +119,7 @@ productsRouter
     };
 
     try {
-      await dbAdapter.appendEntry(productsPath, newProduct);
+      await dbFacade.appendEntry(productsPath, newProduct);
       return res
         .status(StatusCodes.CREATED)
         .json(newProduct)
@@ -182,7 +182,7 @@ productsRouter
       return getBadRequest(res);
     }
 
-    const products: ProductEntity[] = await dbAdapter.readEntries(productsPath);
+    const products: ProductEntity[] = await dbFacade.readEntries(productsPath);
     const product = products.find((p) => p.id === id);
     if (!product) {
       return getNotFound(res);
@@ -201,7 +201,7 @@ productsRouter
       }
 
       const products: ProductEntity[] =
-        await dbAdapter.readEntries(productsPath);
+        await dbFacade.readEntries(productsPath);
       const productIndex = products.findIndex((p) => p.id === id);
       if (productIndex === -1) {
         return getNotFound(res);
@@ -227,7 +227,7 @@ productsRouter
         }
       }
 
-      // products = products.splice(productIndex, 1, p); TODO: implement dbAdapter.updateEntry()
+      // products = products.splice(productIndex, 1, p); TODO: implement dbFacade.updateEntry()
       return getOk(res);
     },
   )
@@ -242,14 +242,14 @@ productsRouter
       }
 
       const products: ProductEntity[] =
-        await dbAdapter.readEntries(productsPath);
+        await dbFacade.readEntries(productsPath);
       const product = products.find((p) => p.id === id);
       if (!product) {
         return getNotFound(res, "product not found");
       }
 
       try {
-        await dbAdapter.deleteEntryById(productsPath, product.id);
+        await dbFacade.deleteEntryById(productsPath, product.id);
         return getOk(res);
       } catch (error) {
         console.error(error);

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { UserEntity } from "../entities/User";
 import authMiddleware from "../middleware/authMiddleware";
-import dbAdapter from "../utils/DbAdapter";
+import dbFacade from "../utils/DbFacade";
 import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
 import type { Response, Request } from "express";
 import path from "node:path";
@@ -64,7 +64,7 @@ const usersPath = path.resolve(__dirname, "../db/users.json");
  *                $ref: '#/components/schemas/User'
  */
 usersRouter.get("/", async (_req: Request, res: Response) => {
-  const entries: UserEntity[] = await dbAdapter.readEntries(usersPath);
+  const entries: UserEntity[] = await dbFacade.readEntries(usersPath);
   return res.status(StatusCodes.OK).json(entries);
 });
 
@@ -102,7 +102,7 @@ usersRouter
     if (!id) {
       return getBadRequest(res);
     }
-    const entries: UserEntity[] = await dbAdapter.readEntries(usersPath);
+    const entries: UserEntity[] = await dbFacade.readEntries(usersPath);
     const user = entries.find((u) => u.id === id);
     if (!user) {
       return getNotFound(res);
@@ -113,7 +113,7 @@ usersRouter
   .delete(
     "/:id",
     authMiddleware,
-    roleMiddleware(["admin"]),
+    // roleMiddleware(["admin"]), // FIXME: должно быть наверное два маршрута - для удаления своего аккаунта (auth) и удаления других пользователей напрямую (users)
     async (req: Request, res: Response) => {
       const { id } = req.params;
       if (!id) {
@@ -121,7 +121,7 @@ usersRouter
       }
 
       try {
-        await dbAdapter.deleteEntryById(usersPath, id as string);
+        await dbFacade.deleteEntryById(usersPath, id as string);
         return getOk(res, "user deleted");
       } catch (error) {
         console.error(error);

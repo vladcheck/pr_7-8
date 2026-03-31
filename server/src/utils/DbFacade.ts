@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 
 type DbEntry = { id: string };
 
-class DbAdapter {
+class DbFacade {
   async readEntries<T extends DbEntry>(path: string): Promise<T[]> {
     const data: T[] = await jsonfile.readFile(path, { encoding: "utf8" });
     return data;
@@ -47,5 +47,5 @@ class DbAdapter {
   }
 }
 
-const dbAdapter = new DbAdapter();
-export default dbAdapter;
+const dbFacade = new DbFacade();
+export default dbFacade;

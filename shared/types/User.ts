@@ -14,6 +14,7 @@ export interface UserRequestBody {
   lastName: string;
   email: string;
   password: string;
+  roles: UserRole[];
 }
 
 export interface UserResponse {

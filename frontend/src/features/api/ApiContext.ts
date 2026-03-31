@@ -1,7 +1,7 @@
 import { createContext } from "react";
-import apiAdapter from "./ApiAdapter";
+import apiFacade from "./ApiFacade";
 
 const ApiContext = createContext<{
-  api?: typeof apiAdapter;
-}>({ api: apiAdapter });
+  api?: typeof apiFacade;
+}>({ api: apiFacade });
 export default ApiContext;

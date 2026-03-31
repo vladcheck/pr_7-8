@@ -4,7 +4,7 @@ import { JwtPayload } from "jsonwebtoken";
 import path from "path";
 import { UserEntity, UserRequestBody } from "../entities/User";
 import { getErrorString, nextId } from "../../server";
-import dbAdapter from "../utils/DbAdapter";
+import dbFacade from "../utils/DbFacade";
 import jwtSingleton, { TokenType } from "../utils/jwt";
 import { hashPassword, verifyPassword } from "../utils/password";
 import type { Response, Request } from "express";
@@ -51,6 +51,7 @@ function getUserTokenBody(user: UserEntity, type: TokenType) {
  *               - lastName
  *               - password
  *               - email
+ *               - roles
  *             properties:
  *                firstName:
  *                 type: string
@@ -64,6 +65,9 @@ function getUserTokenBody(user: UserEntity, type: TokenType) {
  *                email:
  *                 type: string
  *                 example: ivan@yandex.ru
+ *                roles:
+ *                  type: string[]
+ *                  example: ["user","admin"]
  *     responses:
  *       201:
  *         description: Пользователь успешно создан
@@ -84,6 +88,9 @@ function getUserTokenBody(user: UserEntity, type: TokenType) {
  *                  email:
  *                    type: string
  *                    example: ivan@yandex.ru
+ *                  roles:
+ *                    type: string[]
+ *                    example: ["user","admin"]
  *                  hashedPassword:
  *                    type: string
  *                    example: $2b$10$kO6Hq7ZKfV4cPzGm8u7mEuR7r4Xx2p9mP0q3t1yZbCq9Lh5a8b1QW
@@ -142,12 +149,16 @@ authRouter.post("/register", async (req: Request, res: Response) => {
       getErrorString("Неправильная почта", b.firstName),
     );
   } else {
-    const entries: UserEntity[] = await dbAdapter.readEntries(userPath);
+    const entries: UserEntity[] = await dbFacade.readEntries(userPath);
     if (entries.some((u) => u.email === b.email)) {
       return res
         .status(StatusCodes.CONFLICT)
         .send("Профиль с такой почтой уже существует.");
     }
+  }
+
+  if (!b.roles || b.roles.length === 0) {
+    return getBadRequest(res, "Роли не указаны");
   }
 
   const u: UserEntity = {
@@ -156,11 +167,11 @@ authRouter.post("/register", async (req: Request, res: Response) => {
     lastName: b.lastName,
     email: b.email,
     hash: await hashPassword(b.password),
-    roles: ["user"],
+    roles: b.roles,
   };
 
   try {
-    await dbAdapter.appendEntry(userPath, u);
+    await dbFacade.appendEntry(userPath, u);
   } catch (error) {
     console.error(error);
     return res
@@ -209,7 +220,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return getBadRequest(res);
   }
 
-  const entries: UserEntity[] = await dbAdapter.readEntries(userPath);
+  const entries: UserEntity[] = await dbFacade.readEntries(userPath);
   const u = entries.find((u) => u.email === email);
   if (!u) {
     return getNotFound(res);
@@ -280,7 +291,7 @@ authRouter.post("/refresh", async (req: Request, res: Response) => {
   try {
     const payload = jwtSingleton.verify(refreshToken, "refresh");
 
-    const entries: UserEntity[] = await dbAdapter.readEntries(userPath);
+    const entries: UserEntity[] = await dbFacade.readEntries(userPath);
     const u = entries.find((u) => u.id === payload.sub);
     if (!u) {
       return getNotFound(res, "user not found");
@@ -345,7 +356,7 @@ authRouter.get(
       return getInternalServerError(res);
     }
 
-    const entries: UserEntity[] = await dbAdapter.readEntries(userPath);
+    const entries: UserEntity[] = await dbFacade.readEntries(userPath);
     const u = entries.find((u) => u.id === id);
     if (!u) {
       return getNotFound(res);

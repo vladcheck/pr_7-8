@@ -1,4 +1,4 @@
-import { useReducer, useRef } from "react";
+import { ActionDispatch, useReducer, useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import SubmitButton from "@/shared/ui/SubmitButton";
 import FlexContainer from "@/shared/ui/FlexContainer";
@@ -6,9 +6,12 @@ import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import TextInput from "@/shared/ui/TextInput";
 import useApi from "@/features/api/useApi";
-import { FormState } from "./types";
+import { FormState, ReducerAction } from "./types";
 import reducer from "./reducer";
 import { UserRole } from "@root-shared/types/User";
+import { fakerEN_US } from "@faker-js/faker";
+import Button from "@/shared/ui/Button";
+import useNotify from "@/features/notifications/useNotify";
 
 const initialFormState: FormState = {
   firstName: "",
@@ -19,7 +22,26 @@ const initialFormState: FormState = {
   roles: ["user"],
 };
 
+function fillWithRandomData(dispatch: ActionDispatch<[action: ReducerAction]>) {
+  const password = "1234";
+
+  const fakeState: FormState = {
+    firstName: fakerEN_US.person.firstName(),
+    lastName: fakerEN_US.person.lastName(),
+    email: fakerEN_US.internet.email(),
+    password,
+    submitPassword: password,
+    roles: ["user", "admin", "seller"],
+  };
+
+  dispatch({
+    type: "SET_STATE",
+    state: fakeState,
+  });
+}
+
 export default function RegisterPage() {
+  const notifier = useNotify();
   const api = useApi();
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
@@ -30,11 +52,13 @@ export default function RegisterPage() {
       api
         .createUser(formState)
         .then(() => {
+          notifier.notifySuccess("Вы успешно зарегистрировались", 3000);
+          console.log(formState);
           setTimeout(() => {
             navigate("/login");
           }, 1000);
         })
-        .catch((error) => {
+        .catch((error: string) => {
           console.error(error);
         });
     }
@@ -48,6 +72,9 @@ export default function RegisterPage() {
         className="form flex flex-col justify-center items-center gap-2"
         id="register-form"
       >
+        <Button onClick={() => fillWithRandomData(dispatch)}>
+          Заполнить случайными данными
+        </Button>
         <LabelInputBlock htmlFor="role" label="Роль">
           <select
             name="role"
@@ -64,7 +91,7 @@ export default function RegisterPage() {
                 ],
               });
             }}
-            defaultValue={["user"]}
+            value={formState.roles}
             multiple
           >
             <option value="user">Обычный пользователь</option>

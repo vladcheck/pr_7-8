@@ -6,6 +6,8 @@ const HOST = "http://localhost";
 const PORT = 3000;
 const URL = `${HOST}:${PORT}/api`;
 
+type DeleteSelfParams = { id: string };
+
 const apiClient = axios.create({
   baseURL: URL,
   headers: {
@@ -33,7 +35,7 @@ function storeTokens({
   localStorage.setItem("refreshToken", refreshToken);
 }
 
-class ApiAdapter {
+class ApiFacade {
   async getUserById(id: string) {
     const response: AxiosResponse<UserResponse> = await apiClient.get(
       `/users/${id}`,
@@ -145,9 +147,17 @@ class ApiAdapter {
       response.status !== HttpStatusCode.BadRequest &&
       response.status !== HttpStatusCode.Unauthorized
     ) {
+      document.cookie = "";
       localStorage.clear();
     }
     return response;
+  }
+
+  async deleteSelf() {
+    const currentUserInfo = await this.getCurrentUserInfo();
+    if (currentUserInfo?.data) {
+      return this.deleteUserById(currentUserInfo?.data.id);
+    }
   }
 
   async getProducts() {
@@ -188,7 +198,7 @@ class ApiAdapter {
   }
 }
 
-const apiAdapter = new ApiAdapter();
+const apiFacade = new ApiFacade();
 
 // Получение токена доступа из localStorage
 apiClient.interceptors.request.use(
@@ -216,7 +226,7 @@ apiClient.interceptors.response.use(
         return cleanupBeforeCookieRefreshReject(error);
       }
       try {
-        const response = await apiAdapter.refresh(refreshToken);
+        const response = await apiFacade.refresh(refreshToken);
         const isRefreshExpired = response.data.refresh_expired;
         if (isRefreshExpired) {
           return cleanupBeforeCookieRefreshReject(error);
@@ -238,4 +248,4 @@ apiClient.interceptors.response.use(
   },
 );
 
-export default apiAdapter;
+export default apiFacade;

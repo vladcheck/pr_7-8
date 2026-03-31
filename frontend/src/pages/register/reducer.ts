@@ -38,6 +38,8 @@ export default function reducer(state: FormState, action: ReducerAction) {
           return state;
       }
     }
+    case "SET_STATE":
+      return action.state;
     default:
       return state;
   }
