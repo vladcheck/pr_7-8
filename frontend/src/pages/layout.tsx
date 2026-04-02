@@ -41,14 +41,19 @@ export default function RootLayout() {
           name="productSearch"
           id="product-search"
         />
-        {!isLoggedIn ? (
-          <FlexContainer className="gap-4">
-            <Link to={"/register"}>Зарегистрироваться</Link>
-            <Link to={"/login"}>Войти</Link>
-          </FlexContainer>
-        ) : (
-          <ProfileImage to={"/profile"} />
-        )}
+        <FlexContainer className="gap-4">
+          {!isLoggedIn ? (
+            <>
+              <Link to={"/register"}>Зарегистрироваться</Link>
+              <Link to={"/login"}>Войти</Link>
+            </>
+          ) : (
+            <>
+              <Link to={"/products/create"}>Опубликовать товар</Link>
+              <ProfileImage to={"/profile"} />
+            </>
+          )}
+        </FlexContainer>
       </Header>
       <Main className="flex flex-col justify-center items-center">
         <Outlet />

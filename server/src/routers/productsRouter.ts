@@ -228,13 +228,6 @@ productsRouter
         }
       }
 
-      if (!b.imageSrc) {
-        return getBadRequest(res, "image source is empty");
-      } else {
-        p.imageSrc = b.imageSrc;
-        p.imageAlt = b.imageAlt ? b.imageAlt : "";
-      }
-      // products = products.splice(productIndex, 1, p); TODO: implement dbFacade.updateEntry()
       return getOk(res);
     },
   )

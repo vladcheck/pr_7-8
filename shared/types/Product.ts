@@ -1,7 +1,5 @@
 export interface Product {
   id: string;
-  imageSrc?: string;
-  imageAlt?: string;
   title: string;
   category: string;
   description?: string;

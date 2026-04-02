@@ -17,13 +17,11 @@ export default function FullProductCard({
   return (
     <FlexContainer flexDir="col" className="gap-4">
       <FlexContainer className="gap-2">
-        <ProductImageCarousel src={p.imageSrc} alt={p.imageAlt} />
         <FlexContainer flexDir="col" className="bg-gray-100 rounded-2xl p-4">
           <Price>{p.price}</Price>
           <h1 className="text-[1.4rem] max-w-100 wrap-break-word break-all">
             {p.title}
           </h1>
-          <span className="score">SCORE_IN_HERE</span>
           <p>{p.description}</p>
           <span>{p.category}</span>
           <FlexContainer className="gap-2" justify="between" align="center">
@@ -61,19 +59,5 @@ export default function FullProductCard({
         <span>Нет отзывов</span>
       </FlexContainer>
     </FlexContainer>
-  );
-}
-
-function ProductImageCarousel({
-  src,
-  alt = "",
-}: {
-  src?: string;
-  alt?: string;
-}) {
-  return (
-    <div className="carousel overflow-x-scroll overflow-y-hidden bg-gray-100 rounded-2xl aspect-auto p-4 min-w-50">
-      {src && <img src={src} alt={alt} />}
-    </div>
   );
 }

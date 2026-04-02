@@ -1,120 +1,72 @@
-import { useReducer } from "react";
+import { useReducer, useRef } from "react";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import SubmitButton from "@/shared/ui/SubmitButton";
-import { FormAction } from "./types";
+import { FormState } from "./types";
 import TextInput from "@/shared/ui/TextInput";
 import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import useApi from "@/features/api/useApi";
-import FullProductCard from "../ui/FullProductCard";
+import reducer from "./reducer";
+import {
+  CATEGORIES,
+  FORM_ID,
+  MAX_ALLOWED_PRICE,
+  MAX_TITLE_LENGTH,
+  MIN_ALLOWED_PRICE,
+} from "./const";
+import ProductCardPreview from "./ui/ProductCardPreview";
+import Textarea from "@/shared/ui/Textarea";
+import useNotify from "@/features/notifications/useNotify";
+import { useNavigate } from "react-router";
 
-const MIN_ALLOWED_PRICE = 1;
-const MAX_ALLOWED_PRICE = 10e6;
-const MAX_TITLE_LENGTH = 200;
-const FORM_ID = "create-product-form";
-
-const CATEGORIES = [
-  "Еда",
-  "Косметика",
-  "Посуда",
-  "Канцелярия",
-  "Техника",
-  "Игрушки для детей",
-  "Другое",
-];
-
-interface FormState {
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-}
-
-const initialState: FormState = {
+export const initialState: FormState = {
   title: "",
   description: "",
   price: MIN_ALLOWED_PRICE,
   category: "Другое",
 };
 
-function reducer(
-  state: FormState,
-  action: {
-    type: FormAction;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-  },
-): FormState {
-  switch (action.type) {
-    case FormAction.SET_TITLE:
-      return {
-        ...state,
-        title:
-          action.title.length > MAX_TITLE_LENGTH ? state.title : action.title,
-      };
-    case FormAction.SET_CATEGORY:
-      return {
-        ...state,
-        category: action.category,
-      };
-    case FormAction.SET_PRICE: {
-      let price: number;
-      if (isNaN(action.price) || action.price < MIN_ALLOWED_PRICE) {
-        price = MIN_ALLOWED_PRICE;
-      } else if (action.price > MAX_ALLOWED_PRICE) {
-        price = MAX_ALLOWED_PRICE;
-      } else {
-        price = action.price;
-      }
-      return {
-        ...state,
-        price,
-      };
-    }
-    case FormAction.SET_DESCRIPTION:
-      return {
-        ...state,
-        description: action.description,
-      };
-    default:
-      return state;
-  }
-}
-
 export default function CreateProductPage() {
   const api = useApi();
+  const formRef = useRef<HTMLFormElement>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const notifier = useNotify();
+  const navigate = useNavigate();
 
   const onSubmit = () => {
-    if (!state.title || !state.price || !state.category) return;
+    if (!formRef.current?.checkValidity()) {
+      formRef.current?.reportValidity();
+      return;
+    }
     api
       .createProduct(state)
-      .then((response) => {
-        console.log(response);
+      .then(() => {
+        notifier.notifySuccess(
+          "Товар опубликован, сейчас вас перекинет на страницу профиля.",
+          2000,
+        );
+        setTimeout(() => navigate("/profile"), 2000);
       })
       .catch((error) => {
-        console.error(error);
+        notifier.notifyError(error);
       });
   };
 
   return (
     <FlexContainer className="gap-8" justify="center" align="center">
-      <div className="preview">
-        <FullProductCard
-          p={{ ...state, id: "" }}
-          inCart={0}
-          onAddToCart={() => {}}
-          onRemoveFromCart={() => {}}
-        />
-      </div>
+      <div className="preview">{<ProductCardPreview {...state} />}</div>
       <div className="information">
-        <form className="form flex flex-col gap-4" id={FORM_ID}>
+        <form ref={formRef} className="form flex flex-col gap-4" id={FORM_ID}>
           <h1 className="text-2xl">Информация о товаре</h1>
           <LabelInputBlock label="Полное наименование товара" htmlFor="title">
             <TextInput
               value={state.title}
               onChange={(e) => {
-                dispatch({ type: FormAction.SET_TITLE, title: e.target.value });
+                dispatch({
+                  type: "SET_VALUE",
+                  field: "title",
+                  value: e.target.value,
+                });
               }}
               min={3}
               max={MAX_TITLE_LENGTH}
@@ -130,8 +82,9 @@ export default function CreateProductPage() {
               max={MAX_ALLOWED_PRICE}
               onChange={(e) => {
                 dispatch({
-                  type: FormAction.SET_PRICE,
-                  price: parseInt(e.target.value),
+                  type: "SET_VALUE",
+                  field: "price",
+                  value: parseInt(e.target.value),
                 });
               }}
               id="price"
@@ -142,8 +95,9 @@ export default function CreateProductPage() {
             <select
               onChange={(e) => {
                 dispatch({
-                  type: FormAction.SET_CATEGORY,
-                  category: e.target.value,
+                  type: "SET_VALUE",
+                  field: "category",
+                  value: e.target.value,
                 });
               }}
               value={state.category}
@@ -158,20 +112,21 @@ export default function CreateProductPage() {
             </select>
           </LabelInputBlock>
           <LabelInputBlock label="Описание" htmlFor="description">
-            <textarea
+            <Textarea
               minLength={10}
               maxLength={2000}
               value={state.description}
               onChange={(e) => {
                 dispatch({
-                  type: FormAction.SET_DESCRIPTION,
-                  description: e.target.value,
+                  type: "SET_VALUE",
+                  field: "description",
+                  value: e.target.value,
                 });
               }}
               name="description"
               id="description"
               required
-            ></textarea>
+            ></Textarea>
           </LabelInputBlock>
         </form>
         <SubmitButton onClick={onSubmit} formId={FORM_ID}>

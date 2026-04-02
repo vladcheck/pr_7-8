@@ -2,22 +2,18 @@ import type { DetailedHTMLProps, InputHTMLAttributes } from "react";
 import cn from "@/shared/utils/cn";
 import InputWrapper from "./InputWrapper";
 
-interface NumberInputProps {
-  min?: number;
-  max?: number;
-}
-
-export default function Input({
+export default function Textarea({
   value,
   onChange,
   type = "text",
   ...props
-}: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
-  Partial<NumberInputProps>) {
+}: DetailedHTMLProps<
+  InputHTMLAttributes<HTMLTextAreaElement>,
+  HTMLTextAreaElement
+>) {
   return (
     <InputWrapper>
-      <input
-        type={type}
+      <textarea
         value={value}
         onChange={onChange}
         className={cn(
