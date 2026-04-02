@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import useApi from "@/features/api/useApi";
 import { Link, useNavigate } from "react-router";
-import { UserResponse } from "@root-shared/types/User";
 import UserInfoCard from "./ui/UserInfoCard";
 import AccountActions from "./ui/AccountActions";
 import FlexContainer from "@/shared/ui/FlexContainer";
@@ -83,6 +82,7 @@ export default function ProfilePage() {
           <UserInfoCard label="Имя" value={userInfo.firstName} />
           <UserInfoCard label="Фамилия" value={userInfo.lastName} />
           <UserInfoCard label="Почта" value={userInfo.email} />
+          <UserInfoCard label="Роли" value={userInfo.roles.join(", ")} />
         </FlexContainer>
         {userInfo.roles.includes("seller") && (
           <div>
