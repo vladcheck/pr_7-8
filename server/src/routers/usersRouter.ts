@@ -6,7 +6,8 @@ import dbFacade from "../utils/DbFacade";
 import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
 import type { Response, Request } from "express";
 import path from "node:path";
-import roleMiddleware from "../middleware/roleMiddleware";
+import { productsPath } from "./productsRouter";
+import { ProductEntity } from "../entities/Product";
 
 const usersRouter: Router = Router();
 const usersPath = path.resolve(__dirname, "../db/users.json");
@@ -122,6 +123,16 @@ usersRouter
 
       try {
         await dbFacade.deleteEntryById(usersPath, id as string);
+        const products =
+          await dbFacade.readEntries<ProductEntity>(productsPath);
+        const productsNotFromDeletedUser = products.filter(
+          (p) => p.author_id !== id,
+        );
+        await dbFacade.deleteAllEntries(productsPath);
+        await dbFacade.createFile<ProductEntity>(
+          productsPath,
+          productsNotFromDeletedUser,
+        );
         return getOk(res, "user deleted");
       } catch (error) {
         console.error(error);

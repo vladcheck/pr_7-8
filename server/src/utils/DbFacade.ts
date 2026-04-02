@@ -25,12 +25,21 @@ class DbFacade {
     console.log(`Deleted entry '${id}' from '${path}'`);
   }
 
-  async createFile(path: string): Promise<boolean> {
+  async createFile<T extends DbEntry>(
+    path: string,
+    entries?: T[],
+  ): Promise<boolean> {
     try {
       await fs.access(path, fs.constants.R_OK);
       return false;
     } catch {
       await fs.writeFile(path, "[]");
+
+      if (entries) {
+        for (const entry of entries) {
+          await this.appendEntry(path, entry);
+        }
+      }
       console.log("File created successfully");
       return true;
     }

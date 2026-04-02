@@ -7,9 +7,14 @@ import useDebouncer from "@/shared/hooks/useDebouncer";
 import Sidebar from "./ui/Sidebar";
 import { Filters } from "./types";
 import { FILTER_CONFIG } from "./const";
+import useApi from "@/features/api/useApi";
+import useUserInfo from "@/features/api/hooks/useUserInfo";
+import { Link } from "react-router";
+import Button from "@/shared/ui/Button";
 
 export default function ProductsPage() {
-  const { api } = useContext(ApiContext);
+  const api = useApi();
+  const userInfo = useUserInfo();
   const [products, setProducts] = useState<Product[]>([]);
   const [filters, setFilters] = useState<Filters>({
     price: {
@@ -44,21 +49,25 @@ export default function ProductsPage() {
   }, [api]);
 
   return (
-    <FlexContainer className="gap-4 pt-6">
-      <Sidebar filters={filters} setFilters={setFilters} />
-      <div className="w-300">
-        {filteredProducts.length ? (
-          <div className="flex-1 grid grid-cols-4 p-2 gap-2 justify-items-center justify-center">
-            {filteredProducts.map((p) => (
-              <CatalogueProductCard key={p.id} {...p} />
-            ))}
-          </div>
-        ) : (
-          <FlexContainer justify="center" align="center" className="gap-2">
-            <h2 className="text-2xl">Мы не нашли товаров по вашему запросу</h2>
-          </FlexContainer>
-        )}
-      </div>
-    </FlexContainer>
+    userInfo && (
+      <FlexContainer className="gap-4 pt-6">
+        <Sidebar filters={filters} setFilters={setFilters} />
+        <div className="w-300">
+          {filteredProducts.length ? (
+            <div className="flex-1 grid grid-cols-4 p-2 gap-2 justify-items-center justify-center">
+              {filteredProducts.map((p) => (
+                <CatalogueProductCard key={p.id} {...p} />
+              ))}
+            </div>
+          ) : (
+            <FlexContainer justify="center" align="center" className="gap-2">
+              <h2 className="text-2xl">
+                Мы не нашли товаров по вашему запросу
+              </h2>
+            </FlexContainer>
+          )}
+        </div>
+      </FlexContainer>
+    )
   );
 }

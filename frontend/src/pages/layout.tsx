@@ -8,9 +8,11 @@ import useApi from "@/features/api/useApi";
 import { useEffect, useState } from "react";
 import ProfileImage from "@/shared/ui/ProfileImage";
 import logo from "@/shared/svg/logo.svg";
+import useUserInfo from "@/features/api/hooks/useUserInfo";
 
 export default function RootLayout() {
   const api = useApi();
+  const userInfo = useUserInfo();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -49,7 +51,9 @@ export default function RootLayout() {
             </>
           ) : (
             <>
-              <Link to={"/products/create"}>Опубликовать товар</Link>
+              {userInfo?.roles.includes("seller") && (
+                <Link to={"/products/create"}>Опубликовать товар</Link>
+              )}
               <ProfileImage to={"/profile"} />
             </>
           )}

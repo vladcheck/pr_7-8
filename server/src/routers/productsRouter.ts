@@ -17,7 +17,7 @@ import nextId from "../utils/nextId";
 import { ProductRequestBody } from "../types/productsRouter";
 
 const productsRouter: Router = Router();
-const productsPath = path.resolve(__dirname, "../db/products.json");
+export const productsPath = path.resolve(__dirname, "../db/products.json");
 
 /**
  * @swagger

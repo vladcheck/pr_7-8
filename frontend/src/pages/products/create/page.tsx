@@ -19,6 +19,8 @@ import Textarea from "@/shared/ui/Textarea";
 import useNotify from "@/features/notifications/useNotify";
 import { useNavigate } from "react-router";
 import useUserInfo from "@/features/api/hooks/useUserInfo";
+import Button from "@/shared/ui/Button";
+import useHistory from "@/shared/hooks/useHistory";
 
 export const initialState: FormState = {
   title: "",
@@ -34,6 +36,7 @@ export default function CreateProductPage() {
   const notifier = useNotify();
   const navigate = useNavigate();
   const userInfo = useUserInfo();
+  const history = useHistory();
 
   const onSubmit = () => {
     if (!formRef.current?.checkValidity()) {
@@ -56,6 +59,29 @@ export default function CreateProductPage() {
         notifier.notifyError(error);
       });
   };
+
+  if (userInfo && !userInfo?.roles.includes("seller")) {
+    return (
+      <FlexContainer
+        flexDir="col"
+        justify="center"
+        align="center"
+        className="gap-6"
+      >
+        <h1 className="text-3xl">Доступ к этой странице запрещен.</h1>
+        <p className="text-2xl">
+          Причина: <b>вы не являетесь продавцом.</b>
+        </p>
+        <Button
+          onClick={() => {
+            history?.back();
+          }}
+        >
+          Пожалуйста, вернитесь назад.
+        </Button>
+      </FlexContainer>
+    );
+  }
 
   return (
     <FlexContainer className="gap-8" justify="center" align="center">
