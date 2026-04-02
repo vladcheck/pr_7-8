@@ -4,6 +4,7 @@ export interface Product {
   category: string;
   description?: string;
   price: number;
+  author_id: string;
 }
 
 export type ProductResponse = Product;

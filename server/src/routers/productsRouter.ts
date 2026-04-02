@@ -14,6 +14,7 @@ import {
 import type { Response, Request } from "express";
 import roleMiddleware from "../middleware/roleMiddleware";
 import nextId from "../utils/nextId";
+import { ProductRequestBody } from "../types/productsRouter";
 
 const productsRouter: Router = Router();
 const productsPath = path.resolve(__dirname, "../db/products.json");
@@ -88,18 +89,26 @@ const productsPath = path.resolve(__dirname, "../db/products.json");
  *                $ref: '#/components/schemas/Product'
  */
 productsRouter
-  .get("/", async (_req: Request, res: Response) => {
+  .get("/", async (req: Request, res: Response) => {
+    const queryParams: { author_id?: string } = req.query;
+    console.log(req);
     const entries: ProductEntity[] = await dbFacade.readEntries(productsPath);
-    return res.status(StatusCodes.OK).json(entries);
+    const filteredEntries = entries.filter((p) => {
+      return queryParams.author_id
+        ? p.author_id === queryParams.author_id
+        : true;
+    });
+    return res.status(StatusCodes.OK).json(filteredEntries);
   })
   .post("/", async (req: Request, res: Response) => {
-    if (!req.body) {
+    const body: ProductRequestBody = req.body;
+    if (!body) {
       return getBadRequest(res, "body is empty");
     }
-    if (!req.body.price || !req.body.title || !req.body.category) {
+    if (!body.price || !body.title || !body.category || !body.author_id) {
       return getBadRequest(res);
     }
-    if (isNaN(req.body.price) || parseFloat(req.body.price) < 0) {
+    if (isNaN(parseFloat(body.price)) || parseFloat(body.price) < 0) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .send(
@@ -117,6 +126,7 @@ productsRouter
       category: req.body.category,
       price: parseFloat(req.body.price),
       description: req.body.description ?? "",
+      author_id: req.body.author_id,
     };
 
     try {

@@ -18,6 +18,7 @@ import ProductCardPreview from "./ui/ProductCardPreview";
 import Textarea from "@/shared/ui/Textarea";
 import useNotify from "@/features/notifications/useNotify";
 import { useNavigate } from "react-router";
+import useUserInfo from "@/features/api/hooks/useUserInfo";
 
 export const initialState: FormState = {
   title: "",
@@ -27,19 +28,23 @@ export const initialState: FormState = {
 };
 
 export default function CreateProductPage() {
+  const [state, dispatch] = useReducer(reducer, initialState);
   const api = useApi();
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, dispatch] = useReducer(reducer, initialState);
   const notifier = useNotify();
   const navigate = useNavigate();
+  const userInfo = useUserInfo();
 
   const onSubmit = () => {
     if (!formRef.current?.checkValidity()) {
       formRef.current?.reportValidity();
       return;
     }
+    if (!userInfo) {
+      return;
+    }
     api
-      .createProduct(state)
+      .createProduct({ ...state, author_id: userInfo?.id })
       .then(() => {
         notifier.notifySuccess(
           "Товар опубликован, сейчас вас перекинет на страницу профиля.",

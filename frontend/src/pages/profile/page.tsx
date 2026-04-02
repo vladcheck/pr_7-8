@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
 import useApi from "@/features/api/useApi";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { UserResponse } from "@root-shared/types/User";
 import UserInfoCard from "./ui/UserInfoCard";
 import AccountActions from "./ui/AccountActions";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import useNotify from "@/features/notifications/useNotify";
+import { Product } from "@root-shared/types/Product";
+import CatalogueProductCard from "../products/ui/CatalogueProductCard";
+import useUserInfo from "@/features/api/hooks/useUserInfo";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const api = useApi();
   const notifier = useNotify();
-  const [userInfo, setUserInfo] = useState<undefined | UserResponse>();
+  const userInfo = useUserInfo();
+  const [userProducts, setUserProducts] = useState<undefined | Product[]>([]);
 
   useEffect(() => {
     api.isLoggedIn().then((isLoggedIn: boolean) => {
@@ -22,16 +26,12 @@ export default function ProfilePage() {
   }, [api, navigate]);
 
   useEffect(() => {
+    if (!userInfo?.id) return;
     api
-      .getCurrentUserInfo()
-      .then((response: any) => {
-        if (!response || !response.data) throw response;
-        setUserInfo(response.data);
-      })
-      .catch((error: string) => {
-        console.error(error);
-      });
-  }, [api]);
+      .getProducts(userInfo?.id)
+      .then((res) => setUserProducts(res.data))
+      .catch((error) => notifier.notifyError(error));
+  }, [userInfo?.id, api]);
 
   const onLogOut = () => {
     if (!userInfo) return;
@@ -77,13 +77,35 @@ export default function ProfilePage() {
 
   return (
     userInfo && (
-      <FlexContainer flexDir="col" className="gap-10">
+      <FlexContainer flexDir="col" className="gap-10 max-w-[90dvh]">
         <h1 className="text-3xl">Ваш профиль</h1>
         <FlexContainer flexDir="col" className="gap-6">
           <UserInfoCard label="Имя" value={userInfo.firstName} />
           <UserInfoCard label="Фамилия" value={userInfo.lastName} />
           <UserInfoCard label="Почта" value={userInfo.email} />
         </FlexContainer>
+        {userInfo.roles.includes("seller") && (
+          <div>
+            <h2 className="text-2xl font-semibold">Товары</h2>
+            {userProducts?.length ? (
+              <div className="grid grid-cols-4 gap-2">
+                {userProducts?.map((p) => (
+                  <CatalogueProductCard key={p.id} {...p} />
+                ))}
+              </div>
+            ) : (
+              <FlexContainer flexDir="col" className="gap-1">
+                <span>У вас нет опубликованных товаров</span>
+                <Link
+                  to={"/products/create"}
+                  className="text-blue-700 underline"
+                >
+                  Опубликуйте свой первый товар
+                </Link>
+              </FlexContainer>
+            )}
+          </div>
+        )}
         <AccountActions onDeleteAccount={onDeleteAccount} onLogOut={onLogOut} />
       </FlexContainer>
     )

@@ -55,7 +55,7 @@ export default function RootLayout() {
           )}
         </FlexContainer>
       </Header>
-      <Main className="flex flex-col justify-center items-center">
+      <Main className="flex flex-col items-center">
         <Outlet />
       </Main>
       <Footer />

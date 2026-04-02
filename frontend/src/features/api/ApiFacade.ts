@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, HttpStatusCode } from "axios";
-import { UserLoginResponse, UserResponse } from "@/entities/User";
+import { User, UserLoginResponse, UserResponse } from "@/entities/User";
 import { Product, ProductResponse } from "@/entities/Product";
 
 const HOST = "http://localhost";
@@ -158,8 +158,13 @@ class ApiFacade {
     }
   }
 
-  async getProducts() {
-    const response: AxiosResponse<Product[]> = await apiClient.get("/products");
+  async getProducts(id?: string) {
+    const route = "/products";
+    const params: string[] = [];
+    if (id) params.push(`author_id=${id}`);
+    const url = `${route}${params.length > 0 ? "?" + params.join("&") : ""}`;
+    console.log(url);
+    const response: AxiosResponse<Product[]> = await apiClient.get(url);
     return response;
   }
 
@@ -170,7 +175,7 @@ class ApiFacade {
     return response;
   }
 
-  async createProduct(data: object) {
+  async createProduct(data: Omit<Product, "id"> & { author_id: string }) {
     const response: AxiosResponse = await apiClient.post(`/products`, data);
     return response;
   }

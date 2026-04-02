@@ -3,7 +3,9 @@ import Button from "@/shared/ui/Button";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import Price from "@/shared/ui/Price";
 
-export default function ProductCardPreview({ ...p }: Omit<Product, "id">) {
+export default function ProductCardPreview({
+  ...p
+}: Omit<Product, "id" | "author_id">) {
   return (
     <FlexContainer flexDir="col" className="gap-4">
       <div className="w-80% h-100 bg-gray-300"></div>
