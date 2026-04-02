@@ -29,8 +29,7 @@ export default function LoginPage() {
     ) {
       api
         .login(formState)
-        .then((response) => {
-          console.log(response);
+        .then(() => {
           notifier.notifySuccess(`Вы вошли в аккаунт ${formState.email}`);
           setTimeout(() => {
             navigate("/shop");

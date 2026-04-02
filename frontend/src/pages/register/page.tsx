@@ -53,7 +53,6 @@ export default function RegisterPage() {
         .createUser(formState)
         .then(() => {
           notifier.notifySuccess("Вы успешно зарегистрировались", 3000);
-          console.log(formState);
           setTimeout(() => {
             navigate("/login");
           }, 1000);

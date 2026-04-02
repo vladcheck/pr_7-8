@@ -9,6 +9,7 @@ import ProfilePage from "@/pages/profile/page.tsx";
 import RegisterPage from "@/pages/register/page.tsx";
 import Layout from "@/pages/admin/layout";
 import AdminProductsPage from "@/pages/admin/products/page";
+import AdminUsersPage from "@/pages/admin/users/page";
 
 export default function SiteRoutes() {
   return (
@@ -24,7 +25,7 @@ export default function SiteRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin" element={<Layout />}>
-          <Route path="/admin/users" element={<AdminProductsPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/products" element={<AdminProductsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

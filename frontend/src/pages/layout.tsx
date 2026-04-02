@@ -52,7 +52,7 @@ export default function RootLayout() {
           ) : (
             <>
               {userInfo?.roles.includes("admin") && (
-                <Link to={"/admin"}>Администрирование</Link>
+                <Link to={"/admin/users"}>Администрирование</Link>
               )}
               {userInfo?.roles.includes("seller") && (
                 <Link to={"/products/create"}>Опубликовать товар</Link>

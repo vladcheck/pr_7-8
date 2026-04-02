@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, HttpStatusCode } from "axios";
-import { User, UserLoginResponse, UserResponse } from "@/entities/User";
+import { UserLoginResponse, UserResponse } from "@/entities/User";
 import { Product, ProductResponse } from "@/entities/Product";
 
 const HOST = "http://localhost";
@@ -34,6 +34,11 @@ function storeTokens({
 }
 
 class ApiFacade {
+  async getUsers() {
+    const response = await apiClient.get(`/users`);
+    return response;
+  }
+
   async getUserById(id: string) {
     const response: AxiosResponse<UserResponse> = await apiClient.get(
       `/users/${id}`,
@@ -158,12 +163,11 @@ class ApiFacade {
     }
   }
 
-  async getProducts(id?: string) {
+  async getProducts(author_id?: string) {
     const route = "/products";
     const params: string[] = [];
-    if (id) params.push(`author_id=${id}`);
+    if (author_id) params.push(`author_id=${author_id}`);
     const url = `${route}${params.length > 0 ? "?" + params.join("&") : ""}`;
-    console.log(url);
     const response: AxiosResponse<Product[]> = await apiClient.get(url);
     return response;
   }

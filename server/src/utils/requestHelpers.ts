@@ -1,6 +1,5 @@
 import type { Response } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
-import path from "node:path";
 
 const getRequestHelperFactory = (status: number, reason: string) => {
   return (res: Response, send?: any) => {

@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "@/entities/Product";
 import CatalogueProductCard from "./ui/CatalogueProductCard";
-import ApiContext from "@/features/api/ApiContext";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import useDebouncer from "@/shared/hooks/useDebouncer";
 import Sidebar from "./ui/Sidebar";
@@ -9,8 +8,6 @@ import { Filters } from "./types";
 import { FILTER_CONFIG } from "./const";
 import useApi from "@/features/api/useApi";
 import useUserInfo from "@/features/api/hooks/useUserInfo";
-import { Link } from "react-router";
-import Button from "@/shared/ui/Button";
 
 export default function ProductsPage() {
   const api = useApi();

@@ -91,7 +91,6 @@ export const productsPath = path.resolve(__dirname, "../db/products.json");
 productsRouter
   .get("/", async (req: Request, res: Response) => {
     const queryParams: { author_id?: string } = req.query;
-    console.log(req);
     const entries: ProductEntity[] = await dbFacade.readEntries(productsPath);
     const filteredEntries = entries.filter((p) => {
       return queryParams.author_id

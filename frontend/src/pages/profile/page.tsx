@@ -58,12 +58,11 @@ export default function ProfilePage() {
     if (!confirm) return;
     api
       .deleteSelf()
-      .then((response: any) => {
+      .then(() => {
         notifier.notifySuccess("Аккаунт удален.");
         setTimeout(() => {
           navigate("/shop");
         }, 1000);
-        console.log(response);
       })
       .catch((error: string) => {
         notifier.notifyError(
