@@ -1,7 +1,17 @@
 import type { MouseEvent, ReactNode, SyntheticEvent } from 'react';
 import Button from '@/shared/ui/Button';
 
-type ButtonVariant = 'primary' | 'secondary' | 'glass' | 'danger' | 'ghost' | 'ghost-primary' | 'secondary-danger' | 'secondary-success' | 'outline' | 'none';
+type ButtonVariant =
+	| 'primary'
+	| 'secondary'
+	| 'glass'
+	| 'danger'
+	| 'ghost'
+	| 'ghost-primary'
+	| 'secondary-danger'
+	| 'secondary-success'
+	| 'outline'
+	| 'none';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 type ButtonRounded = 'md' | 'lg' | 'xl' | '2xl' | 'full';
 

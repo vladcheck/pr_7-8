@@ -20,8 +20,15 @@ export default function Sidebar({
 			<FlexContainer flexDir="col" className="gap-6">
 				<div className="flex flex-col gap-3">
 					<div className="flex justify-between items-center">
-						<label htmlFor="min-price" className="text-sm font-bold text-text-muted">Мин. цена</label>
-						<span className="text-xs font-black px-2 py-1 bg-primary/10 text-primary rounded-md">{filters.price.min} ₽</span>
+						<label
+							htmlFor="min-price"
+							className="text-sm font-bold text-text-muted"
+						>
+							Мин. цена
+						</label>
+						<span className="text-xs font-black px-2 py-1 bg-primary/10 text-primary rounded-md">
+							{filters.price.min} ₽
+						</span>
 					</div>
 					<input
 						type="range"
@@ -43,8 +50,15 @@ export default function Sidebar({
 
 				<div className="flex flex-col gap-3">
 					<div className="flex justify-between items-center">
-						<label htmlFor="max-price" className="text-sm font-bold text-text-muted">Макс. цена</label>
-						<span className="text-xs font-black px-2 py-1 bg-primary/10 text-primary rounded-md">{filters.price.max} ₽</span>
+						<label
+							htmlFor="max-price"
+							className="text-sm font-bold text-text-muted"
+						>
+							Макс. цена
+						</label>
+						<span className="text-xs font-black px-2 py-1 bg-primary/10 text-primary rounded-md">
+							{filters.price.max} ₽
+						</span>
 					</div>
 					<input
 						type="range"
@@ -65,13 +79,18 @@ export default function Sidebar({
 				</div>
 			</FlexContainer>
 
-			<button 
+			<button
 				type="button"
 				className="mt-4 text-xs font-bold text-primary hover:text-primary-hover underline underline-offset-4 transition-colors text-left"
-				onClick={() => setFilters({
-					...filters,
-					price: { min: FILTER_CONFIG.price.min, max: FILTER_CONFIG.price.max }
-				})}
+				onClick={() =>
+					setFilters({
+						...filters,
+						price: {
+							min: FILTER_CONFIG.price.min,
+							max: FILTER_CONFIG.price.max,
+						},
+					})
+				}
 			>
 				Сбросить фильтры
 			</button>

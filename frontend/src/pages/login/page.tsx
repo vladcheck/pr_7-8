@@ -46,11 +46,20 @@ const LoginPage = observer(function LoginPage() {
 	};
 
 	return (
-		<FlexContainer flexDir="col" justify="center" align="center" className="min-h-[80vh] w-full px-6 animate-fade-in">
+		<FlexContainer
+			flexDir="col"
+			justify="center"
+			align="center"
+			className="min-h-[80vh] w-full px-6 animate-fade-in"
+		>
 			<div className="glass-panel w-full max-w-md p-10 animate-slide-up shadow-premium">
 				<div className="text-center mb-10">
-					<h1 className="text-3xl font-black mb-3 tracking-tight">С возвращением</h1>
-					<p className="text-text-muted">Введите свои данные для входа в аккаунт</p>
+					<h1 className="text-3xl font-black mb-3 tracking-tight">
+						С возвращением
+					</h1>
+					<p className="text-text-muted">
+						Введите свои данные для входа в аккаунт
+					</p>
 				</div>
 
 				<form
@@ -63,7 +72,12 @@ const LoginPage = observer(function LoginPage() {
 					}}
 				>
 					<div className="space-y-2">
-						<label htmlFor="email" className="text-sm font-bold ml-1 text-text-muted">Почта</label>
+						<label
+							htmlFor="email"
+							className="text-sm font-bold ml-1 text-text-muted"
+						>
+							Почта
+						</label>
 						<Input
 							type="email"
 							value={formState.email}
@@ -81,8 +95,18 @@ const LoginPage = observer(function LoginPage() {
 
 					<div className="space-y-2">
 						<div className="flex justify-between items-center px-1">
-							<label htmlFor="password" className="text-sm font-bold text-text-muted">Пароль</label>
-							<Link to="/forgot-password" className="text-xs font-bold text-primary hover:underline">Забыли?</Link>
+							<label
+								htmlFor="password"
+								className="text-sm font-bold text-text-muted"
+							>
+								Пароль
+							</label>
+							<Link
+								to="/forgot-password"
+								className="text-xs font-bold text-primary hover:underline"
+							>
+								Забыли?
+							</Link>
 						</div>
 						<Input
 							type="password"
@@ -99,8 +123,8 @@ const LoginPage = observer(function LoginPage() {
 						/>
 					</div>
 
-					<SubmitButton 
-						formId="login-form" 
+					<SubmitButton
+						formId="login-form"
 						onClick={onSubmit}
 						variant="primary"
 						size="xl"
@@ -114,7 +138,10 @@ const LoginPage = observer(function LoginPage() {
 				<div className="mt-10 pt-6 border-t border-border-color/50 text-center">
 					<p className="text-sm text-text-muted font-medium">
 						Нет аккаунта?{' '}
-						<Link to="/register" className="text-primary font-black hover:underline underline-offset-4">
+						<Link
+							to="/register"
+							className="text-primary font-black hover:underline underline-offset-4"
+						>
 							Зарегистрироваться
 						</Link>
 					</p>

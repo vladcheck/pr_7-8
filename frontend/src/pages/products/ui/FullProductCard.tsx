@@ -106,7 +106,19 @@ const FullProductCard = observer(
 										rounded="full"
 										pointerEvents="auto"
 									>
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<path d="m15 18-6-6 6-6" />
+										</svg>
 									</Button>
 									<Button
 										onClick={nextImage}
@@ -115,7 +127,19 @@ const FullProductCard = observer(
 										rounded="full"
 										pointerEvents="auto"
 									>
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-9-6" /></svg>
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<path d="m9 18 6-6-9-6" />
+										</svg>
 									</Button>
 								</div>
 								<div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2.5 bg-black/10 dark:bg-white/10 px-4 py-2 rounded-full backdrop-blur-xl border border-white/10">
@@ -164,7 +188,10 @@ const FullProductCard = observer(
 						<div className="mt-12 pt-8 border-t border-border-color/50">
 							<FlexContainer className="gap-4 flex-col sm:flex-row">
 								{inCart > 0 ? (
-									<FlexContainer align="center" className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl gap-6 border border-border-color/50 shadow-inner">
+									<FlexContainer
+										align="center"
+										className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl gap-6 border border-border-color/50 shadow-inner"
+									>
 										<Button
 											onClick={() => onRemoveFromCart(p.id)}
 											variant="secondary-danger"
@@ -196,11 +223,7 @@ const FullProductCard = observer(
 										Добавить в корзину
 									</Button>
 								)}
-								<Button
-									variant="secondary"
-									size="xl"
-									rounded="2xl"
-								>
+								<Button variant="secondary" size="xl" rounded="2xl">
 									Быстрый заказ
 								</Button>
 							</FlexContainer>
@@ -214,21 +237,25 @@ const FullProductCard = observer(
 				</div>
 
 				{/* Reviews / Additional Info Panel */}
-				<div className="mt-8 glass-panel p-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+				<div
+					className="mt-8 glass-panel p-8 animate-slide-up"
+					style={{ animationDelay: '0.2s' }}
+				>
 					<FlexContainer justify="between" align="center" className="mb-8 p-0">
 						<h2 className="text-2xl font-black flex items-center gap-3">
 							Отзывы покупателей
-							<span className="text-xs bg-slate-100 dark:bg-slate-800 text-text-muted px-3 py-1 rounded-full font-bold">0</span>
+							<span className="text-xs bg-slate-100 dark:bg-slate-800 text-text-muted px-3 py-1 rounded-full font-bold">
+								0
+							</span>
 						</h2>
-						<Button
-							variant="ghost-primary"
-						>
-							Написать отзыв
-						</Button>
+						<Button variant="ghost-primary">Написать отзыв</Button>
 					</FlexContainer>
 
 					<div className="py-16 text-center bg-slate-50/50 dark:bg-slate-900/20 rounded-3xl border-2 border-dashed border-border-color/50">
-						<MessageSquare size={48} className="mx-auto mb-4 opacity-20 text-text-muted" />
+						<MessageSquare
+							size={48}
+							className="mx-auto mb-4 opacity-20 text-text-muted"
+						/>
 						<p className="text-lg text-text-muted italic">
 							Пока нет отзывов для этого товара. Будьте первым!
 						</p>

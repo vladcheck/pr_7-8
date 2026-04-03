@@ -1,8 +1,8 @@
+import { ShoppingCart } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router';
 import { ToastContainer } from 'react-toastify';
-import { ShoppingCart } from 'lucide-react';
 import useUserInfo from '@/features/api/hooks/useUserInfo';
 import useApi from '@/features/api/useApi';
 import useCart from '@/features/cart/useCart';
@@ -12,9 +12,9 @@ import Button from '@/shared/ui/Button';
 import FlexContainer from '@/shared/ui/FlexContainer';
 import Footer from '@/shared/ui/Footer';
 import Header from '@/shared/ui/Header';
+import Input from '@/shared/ui/Input';
 import Main from '@/shared/ui/Main';
 import ProfileImage from '@/shared/ui/ProfileImage';
-import Input from '@/shared/ui/Input';
 
 const RootLayout = observer(function RootLayout() {
 	const api = useApi();

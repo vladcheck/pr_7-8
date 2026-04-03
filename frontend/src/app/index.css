@@ -5,7 +5,7 @@
 	--color-primary: oklch(0.55 0.25 264);
 	--color-primary-hover: oklch(0.5 0.25 264);
 	--color-accent: oklch(0.8 0.15 85);
-	
+
 	/* Neutral Surface Tones */
 	--color-bg-app: oklch(0.96 0.01 250);
 	--color-surface: oklch(1 0 0);
@@ -17,12 +17,13 @@
 	--color-dark-surface: oklch(0.2 0.03 260);
 	--color-dark-surface-hover: oklch(0.25 0.03 260);
 	--color-dark-border: oklch(0.3 0.02 260);
-	
+
 	/* Typography */
 	--font-display: "Outfit", "Inter", system-ui, sans-serif;
-	
+
 	/* Custom Shadows */
-	--shadow-premium: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+	--shadow-premium:
+		0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 	--shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
@@ -42,8 +43,9 @@
 
 		background-color: var(--bg-color);
 		color: var(--text-color);
-		transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-					color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+		transition:
+			background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+			color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -64,7 +66,10 @@
 		min-height: 100vh;
 	}
 
-	h1, h2, h3, h4 {
+	h1,
+	h2,
+	h3,
+	h4 {
 		font-family: var(--font-display);
 		letter-spacing: -0.02em;
 	}
@@ -97,13 +102,23 @@
 }
 
 @keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 @keyframes slideUp {
-	from { opacity: 0; transform: translateY(20px); }
-	to { opacity: 1; transform: translateY(0); }
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 /* Custom Scrollbar */
