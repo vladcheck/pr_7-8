@@ -1,10 +1,12 @@
 import { fakerEN_US } from '@faker-js/faker';
-import type { UserRole } from '@root-shared/types/User';
+import type { UserLoginResponse, UserRole } from '@root-shared/types/User';
+import type { AxiosResponse } from 'axios';
 import { runInAction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router';
 import useApi from '@/features/api/useApi';
+import { authStore } from '@/features/auth/AuthStore';
 import useNotify from '@/features/notifications/useNotify';
 import Button from '@/shared/ui/Button';
 import FlexContainer from '@/shared/ui/FlexContainer';
@@ -44,14 +46,16 @@ const RegisterPage = observer(function RegisterPage() {
 		if (formRef.current?.checkValidity()) {
 			api
 				.createUser(formState)
-				.then(() => {
+				.then((response: AxiosResponse<UserLoginResponse>) => {
+					const { accessToken, refreshToken, uid } = response.data;
+					authStore.setAuth(accessToken, refreshToken, uid, formState.roles);
 					notifier.notifySuccess('Вы успешно зарегистрировались', 3000);
 					setTimeout(() => {
-						navigate('/login');
+						navigate('/shop');
 					}, 1000);
 				})
-				.catch((error: string) => {
-					console.error(error);
+				.catch((error: Error) => {
+					notifier.notifyError(error.message);
 				});
 		}
 	};

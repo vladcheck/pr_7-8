@@ -1,8 +1,11 @@
+import type { UserLoginResponse } from '@root-shared/types/User';
+import type { AxiosResponse } from 'axios';
 import { runInAction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router';
 import useApi from '@/features/api/useApi';
+import { authStore } from '@/features/auth/AuthStore';
 import useNotify from '@/features/notifications/useNotify';
 import FlexContainer from '@/shared/ui/FlexContainer';
 import Input from '@/shared/ui/Input';
@@ -27,14 +30,17 @@ const LoginPage = observer(function LoginPage() {
 		) {
 			api
 				.login(formState)
-				.then(() => {
+				.then((response: AxiosResponse<UserLoginResponse>) => {
+					const { accessToken, refreshToken, uid } = response.data;
+					// Note: roles are not returned by login currently, we'd need to fetch /me or include them in JWT
+					authStore.setAuth(accessToken, refreshToken, uid, []);
 					notifier.notifySuccess(`Вы вошли в аккаунт ${formState.email}`);
 					setTimeout(() => {
 						navigate('/shop');
 					}, 2000);
 				})
-				.catch((error) => {
-					notifier.notifyError(error as string);
+				.catch((error: string) => {
+					notifier.notifyError(error);
 					console.error(error);
 				});
 		}

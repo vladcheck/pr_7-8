@@ -61,13 +61,15 @@ productsRouter
 	})
 	.post(
 		'/',
+		authMiddleware,
+		roleMiddleware(['seller']),
 		upload.array('images', 10),
 		async (req: Request, res: Response) => {
 			const body: ProductRequestBody = req.body;
 			if (!body) {
 				return getBadRequest(res, 'body is empty');
 			}
-			if (!body.price || !body.title || !body.category || !body.author_id) {
+			if (!body.price || !body.title || !body.category) {
 				return getBadRequest(res);
 			}
 			if (Number.isNaN(parseFloat(body.price)) || parseFloat(body.price) < 0) {
@@ -92,7 +94,7 @@ productsRouter
 				category: req.body.category,
 				price: parseFloat(req.body.price),
 				description: req.body.description ?? '',
-				author_id: req.body.author_id,
+				author_id: (req as any).user.sub,
 			};
 
 			if (uploadedImages.length > 0) {
@@ -147,6 +149,15 @@ productsRouter
 			}
 
 			const p = products[productIndex]!;
+			const userId = (req as any).user.sub;
+			const isAdmin = (req as any).user.roles?.includes('admin');
+
+			if (p.author_id !== userId && !isAdmin) {
+				return res
+					.status(StatusCodes.FORBIDDEN)
+					.send('Access denied: You are not the author of this product.');
+			}
+
 			const b: Record<keyof typeof p, string> = req.body;
 
 			if (b.title) p.title = b.title;
@@ -193,6 +204,15 @@ productsRouter
 			const product = products.find((p) => p.id === id);
 			if (!product) {
 				return getNotFound(res, 'product not found');
+			}
+
+			const userId = (req as any).user.sub;
+			const isAdmin = (req as any).user.roles?.includes('admin');
+
+			if (product.author_id !== userId && !isAdmin) {
+				return res
+					.status(StatusCodes.FORBIDDEN)
+					.send('Access denied: You are not the author of this product.');
 			}
 
 			try {
