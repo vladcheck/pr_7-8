@@ -1,13 +1,16 @@
-import type { PropsWithChildren, SyntheticEvent } from 'react';
+import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
+import cn from '@/shared/utils/cn';
 
 export default function SubmitButton({
 	formId,
 	onClick,
 	children,
-}: PropsWithChildren & {
-	formId: string;
-	onClick?: (e?: SyntheticEvent) => void;
-}) {
+	className,
+	...props
+}: PropsWithChildren &
+	ButtonHTMLAttributes<HTMLButtonElement> & {
+		formId: string;
+	}) {
 	return (
 		<button
 			type="submit"
@@ -16,7 +19,11 @@ export default function SubmitButton({
 				e.preventDefault();
 				onClick?.(e);
 			}}
-			className="transition-colors duration-150 bg-gray-900 text-white px-4 py-1 rounded-xl hover:bg-gray-800"
+			className={cn(
+				'transition-colors duration-150 bg-gray-900 text-white px-4 py-1 rounded-xl hover:bg-gray-800',
+				className,
+			)}
+			{...props}
 		>
 			{children}
 		</button>
