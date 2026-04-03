@@ -15,9 +15,20 @@ import type { Response, Request } from "express";
 import roleMiddleware from "../middleware/roleMiddleware";
 import nextId from "../utils/nextId";
 import { ProductRequestBody } from "../types/productsRouter";
+import multer from "multer";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
+
+const storage = multer.diskStorage({
+  destination: function (_req: any, _file: any, cb: any) {
+    cb(null, path.resolve(__dirname, "../../public/images/products"));
+  },
+  filename: function (_req: any, file: any, cb: any) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+const upload = multer({ storage: storage });
 
 const productsRouter: Router = Router();
 export const productsPath = path.resolve(__dirname, "../db/products.json");
@@ -93,7 +104,8 @@ export const productsPath = path.resolve(__dirname, "../db/products.json");
  */
 productsRouter
   .get("/", async (req: Request, res: Response) => {
-    const queryParams: { author_id?: string; page?: string; limit?: string } = req.query as any;
+    const queryParams: { author_id?: string; page?: string; limit?: string } =
+      req.query as any;
     const entries: ProductEntity[] = await dbFacade.readEntries(productsPath);
     const filteredEntries = entries.filter((p) => {
       return queryParams.author_id
@@ -113,49 +125,61 @@ productsRouter
       total: filteredEntries.length,
       page,
       limit,
-      totalPages: Math.ceil(filteredEntries.length / limit)
+      totalPages: Math.ceil(filteredEntries.length / limit),
     });
   })
-  .post("/", async (req: Request, res: Response) => {
-    const body: ProductRequestBody = req.body;
-    if (!body) {
-      return getBadRequest(res, "body is empty");
-    }
-    if (!body.price || !body.title || !body.category || !body.author_id) {
-      return getBadRequest(res);
-    }
-    if (isNaN(parseFloat(body.price)) || parseFloat(body.price) < 0) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .send(
-          getErrorString(
-            `Некорректная цена`,
-            req.body.price,
-            `неотрицательное число`,
-          ),
-        );
-    }
+  .post(
+    "/",
+    upload.array("images", 10),
+    async (req: Request, res: Response) => {
+      const body: ProductRequestBody = req.body;
+      if (!body) {
+        return getBadRequest(res, "body is empty");
+      }
+      if (!body.price || !body.title || !body.category || !body.author_id) {
+        return getBadRequest(res);
+      }
+      if (isNaN(parseFloat(body.price)) || parseFloat(body.price) < 0) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .send(
+            getErrorString(
+              `Некорректная цена`,
+              req.body.price,
+              `неотрицательное число`,
+            ),
+          );
+      }
 
-    const newProduct: ProductEntity = {
-      id: nextId(),
-      title: req.body.title,
-      category: req.body.category,
-      price: parseFloat(req.body.price),
-      description: req.body.description ?? "",
-      author_id: req.body.author_id,
-    };
+      const files = req.files as Express.Multer.File[];
+      const uploadedImages =
+        files?.map((f) => `/api/public/images/products/${f.filename}`) || [];
 
-    try {
-      await dbFacade.appendEntry(productsPath, newProduct);
-      return res
-        .status(StatusCodes.CREATED)
-        .json(newProduct)
-        .send(ReasonPhrases.CREATED);
-    } catch (error) {
-      console.error(error);
-      return getInternalServerError(res, error);
-    }
-  });
+      const newProduct: ProductEntity = {
+        id: nextId(),
+        title: req.body.title,
+        category: req.body.category,
+        price: parseFloat(req.body.price),
+        description: req.body.description ?? "",
+        author_id: req.body.author_id,
+      };
+
+      if (uploadedImages.length > 0) {
+        newProduct.images = uploadedImages;
+      }
+
+      try {
+        await dbFacade.appendEntry(productsPath, newProduct);
+        return res
+          .status(StatusCodes.CREATED)
+          .json(newProduct)
+          .send(ReasonPhrases.CREATED);
+      } catch (error) {
+        console.error(error);
+        return getInternalServerError(res, error);
+      }
+    },
+  );
 
 /**
  * @swagger
@@ -221,6 +245,7 @@ productsRouter
     "/:id",
     authMiddleware,
     roleMiddleware(["seller"]),
+    upload.array("images", 10),
     async (req: Request, res: Response) => {
       const { id } = req.params;
       if (!id) {
@@ -239,6 +264,15 @@ productsRouter
 
       if (b.title) p.title = b.title;
       if (b.description) p.description = b.description;
+
+      const files = req.files as any[];
+      if (files && files.length > 0) {
+        const uploadedImages = files.map(
+          (f) => `/api/public/images/products/${f.filename}`,
+        );
+        p.images = p.images ? [...p.images, ...uploadedImages] : uploadedImages;
+      }
+
       if (b.price) {
         if (isNaN(parseFloat(b.price)) || parseFloat(b.price) < 0) {
           return getBadRequest(

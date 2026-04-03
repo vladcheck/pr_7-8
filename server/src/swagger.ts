@@ -1,25 +1,14 @@
-import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import fs from "fs";
 import path from "path";
 
-const PORT = process.env["PORT"] || "3000";
-
-const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    failOnErrors: true,
-    info: { title: "API AUTH", version: "1.0.0" },
-    servers: [
-      {
-        url: `http://localhost:${PORT}`,
-        description: "Локальный сервер",
-      },
-    ],
-  },
-  apis: [path.resolve(__dirname, "./routers/*.ts")],
-};
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
+let swaggerSpec = {};
+try {
+  const fileOutput = fs.readFileSync(path.resolve(process.cwd(), "public/swagger.json"), "utf8");
+  swaggerSpec = JSON.parse(fileOutput);
+} catch (error) {
+  console.error("Swagger file not found. Run pnpm start to generate it.", error);
+}
 
 export const swaggerParams: any[] = [
   "/api-docs",
