@@ -1,6 +1,7 @@
 import { fakerEN_US } from '@faker-js/faker';
 import type { UserLoginResponse, UserRole } from '@root-shared/types/User';
 import type { AxiosResponse } from 'axios';
+import { Wand2 } from 'lucide-react';
 import { runInAction } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import { useRef } from 'react';
@@ -11,7 +12,6 @@ import useNotify from '@/features/notifications/useNotify';
 import Button from '@/shared/ui/Button';
 import FlexContainer from '@/shared/ui/FlexContainer';
 import Input from '@/shared/ui/Input';
-import LabelInputBlock from '@/shared/ui/LabelInputBlock';
 import SubmitButton from '@/shared/ui/SubmitButton';
 import TextInput from '@/shared/ui/TextInput';
 
@@ -61,104 +61,157 @@ const RegisterPage = observer(function RegisterPage() {
 	};
 
 	return (
-		<FlexContainer flexDir="col" justify="center" align="center">
-			<h1 className="text-2xl">Регистрация</h1>
-			<form
-				ref={formRef}
-				className="form flex flex-col justify-center items-center gap-2"
-				id="register-form"
-			>
-				<Button onClick={fillWithRandomData}>
-					Заполнить случайными данными
-				</Button>
-				<LabelInputBlock htmlFor="role" label="Роль">
-					<select
-						name="role"
-						id="role"
-						onChange={(e) => {
-							runInAction(() => {
-								formState.roles = [
-									...formState.roles,
-									...[...e.target.selectedOptions].map(
-										(opt) => opt.value as UserRole,
-									),
-								];
-							});
-						}}
-						value={formState.roles}
-						multiple
+		<FlexContainer flexDir="col" justify="center" align="center" className="min-h-[90vh] w-full px-6 py-12 animate-fade-in">
+			<div className="glass-panel w-full max-w-2xl p-10 animate-slide-up shadow-premium">
+				<div className="text-center mb-10">
+					<h1 className="text-3xl font-black mb-3 tracking-tight">Создать аккаунт</h1>
+					<p className="text-text-muted">Присоединяйтесь к нашему сообществу сегодня</p>
+				</div>
+
+				<form
+					ref={formRef}
+					className="grid grid-cols-1 md:grid-cols-2 gap-6"
+					id="register-form"
+					onSubmit={(e) => {
+						e.preventDefault();
+						onSubmit();
+					}}
+				>
+					<div className="md:col-span-2 flex justify-end">
+						<button
+							type="button"
+							onClick={fillWithRandomData}
+							className="text-xs font-bold text-primary/60 hover:text-primary transition-colors flex items-center gap-1.5"
+						>
+							<Wand2 size={14} />
+							Заполнить тест-данными
+						</button>
+					</div>
+
+					<div className="space-y-2">
+						<label htmlFor="firstName" className="text-sm font-bold ml-1 text-text-muted">Имя</label>
+						<TextInput
+							value={formState.firstName}
+							onChange={(e) => {
+								runInAction(() => (formState.firstName = e.target.value));
+							}}
+							id="firstName"
+							placeholder="Иван"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<label htmlFor="lastName" className="text-sm font-bold ml-1 text-text-muted">Фамилия</label>
+						<TextInput
+							value={formState.lastName}
+							onChange={(e) => {
+								runInAction(() => (formState.lastName = e.target.value));
+							}}
+							id="lastName"
+							placeholder="Иванов"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="md:col-span-2 space-y-2">
+						<label htmlFor="email" className="text-sm font-bold ml-1 text-text-muted">Электронная почта</label>
+						<Input
+							type="email"
+							value={formState.email}
+							onChange={(e) => {
+								runInAction(() => (formState.email = e.target.value));
+							}}
+							id="email"
+							placeholder="ivan@example.com"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<label htmlFor="password" className="text-sm font-bold ml-1 text-text-muted">Пароль</label>
+						<Input
+							type="password"
+							value={formState.password}
+							onChange={(e) => {
+								runInAction(() => (formState.password = e.target.value));
+							}}
+							id="password"
+							placeholder="••••••••"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<label htmlFor="submitPassword" className="text-sm font-bold ml-1 text-text-muted">Подтверждение</label>
+						<Input
+							type="password"
+							value={formState.submitPassword}
+							onChange={(e) => {
+								runInAction(() => (formState.submitPassword = e.target.value));
+							}}
+							id="submitPassword"
+							placeholder="••••••••"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="md:col-span-2 space-y-3">
+						<label className="text-sm font-bold ml-1 text-text-muted">Выберите ваши роли</label>
+						<div className="flex flex-wrap gap-3">
+							{['user', 'admin', 'seller'].map((role) => (
+								<Button
+									key={role}
+									onClick={() => {
+										runInAction(() => {
+											if (formState.roles.includes(role as UserRole)) {
+												formState.roles = formState.roles.filter(r => r !== role);
+											} else {
+												formState.roles.push(role as UserRole);
+											}
+										});
+									}}
+									variant={formState.roles.includes(role as UserRole) ? 'primary' : 'secondary'}
+									size="md"
+									rounded="xl"
+								>
+									{role === 'user' ? 'Пользователь' : role === 'admin' ? 'Админ' : 'Продавец'}
+								</Button>
+							))}
+						</div>
+					</div>
+				</form>
+
+				<div className="mt-10 flex flex-col gap-6">
+					<SubmitButton
+						formId="register-form"
+						onClick={onSubmit}
+						variant="primary"
+						size="xl"
+						rounded="2xl"
+						fullWidth
 					>
-						<option value="user">Обычный пользователь</option>
-						<option value="admin">Администратор</option>
-						<option value="seller">Продавец</option>
-					</select>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="firstName" label="Имя">
-					<TextInput
-						value={formState.firstName}
-						onChange={(e) => {
-							runInAction(() => (formState.firstName = e.target.value));
-						}}
-						id="firstName"
-						required
-					/>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="lastName" label="Фамилия">
-					<TextInput
-						value={formState.lastName}
-						onChange={(e) => {
-							runInAction(() => (formState.lastName = e.target.value));
-						}}
-						id="lastName"
-						required
-					/>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="email" label="Почта">
-					<Input
-						type="email"
-						value={formState.email}
-						onChange={(e) => {
-							runInAction(() => (formState.email = e.target.value));
-						}}
-						id="email"
-						required
-					/>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="password" label="Пароль">
-					<Input
-						type="password"
-						value={formState.password}
-						onChange={(e) => {
-							runInAction(() => (formState.password = e.target.value));
-						}}
-						id="password"
-						required
-					/>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="submitPassword" label="Подтвердите пароль">
-					<Input
-						type="password"
-						value={formState.submitPassword}
-						onChange={(e) => {
-							runInAction(() => (formState.submitPassword = e.target.value));
-						}}
-						id="submitPassword"
-						required
-					/>
-				</LabelInputBlock>
-			</form>
-			<FlexContainer
-				flexDir="col"
-				justify="center"
-				align="center"
-				className="mt-6 gap-4"
-			>
-				<SubmitButton formId="register-form" onClick={onSubmit}>
-					Зарегистрироваться
-				</SubmitButton>
-				<Link to="/login">Войти</Link>
-				<Link to="/forgot-password">Забыли пароль?</Link>
-			</FlexContainer>
+						Зарегистрироваться
+					</SubmitButton>
+
+					<div className="pt-6 border-t border-border-color/50 text-center space-y-2">
+						<p className="text-sm text-text-muted font-medium">
+							Уже есть аккаунт?{' '}
+							<Link to="/login" className="text-primary font-black hover:underline underline-offset-4">
+								Войти
+							</Link>
+						</p>
+						<Link to="/forgot-password" className="block text-xs font-bold text-text-muted hover:text-primary transition-colors">
+							Забыли пароль?
+						</Link>
+					</div>
+				</div>
+			</div>
 		</FlexContainer>
 	);
 });

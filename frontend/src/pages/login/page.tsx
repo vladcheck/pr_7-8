@@ -9,7 +9,6 @@ import { authStore } from '@/features/auth/AuthStore';
 import useNotify from '@/features/notifications/useNotify';
 import FlexContainer from '@/shared/ui/FlexContainer';
 import Input from '@/shared/ui/Input';
-import LabelInputBlock from '@/shared/ui/LabelInputBlock';
 import SubmitButton from '@/shared/ui/SubmitButton';
 
 const LoginPage = observer(function LoginPage() {
@@ -47,51 +46,80 @@ const LoginPage = observer(function LoginPage() {
 	};
 
 	return (
-		<FlexContainer flexDir="col" justify="center" align="center">
-			<h1 className="text-2xl">Вход</h1>
-			<form
-				ref={formRef}
-				className="form flex flex-col justify-center items-center gap-2"
-				id="login-form"
-			>
-				<LabelInputBlock htmlFor="email" label="Почта">
-					<Input
-						type="email"
-						value={formState.email}
-						onChange={(e) => {
-							runInAction(() => {
-								formState.email = e.target.value;
-							});
-						}}
-						id="email"
-						required
-					/>
-				</LabelInputBlock>
-				<LabelInputBlock htmlFor="password" label="Пароль">
-					<Input
-						type="password"
-						value={formState.password}
-						onChange={(e) => {
-							runInAction(() => {
-								formState.password = e.target.value;
-							});
-						}}
-						id="password"
-						required
-					/>
-				</LabelInputBlock>
-			</form>
-			<FlexContainer
-				flexDir="col"
-				justify="center"
-				align="center"
-				className="mt-6 gap-4"
-			>
-				<SubmitButton formId="login-form" onClick={onSubmit}>
-					Войти
-				</SubmitButton>
-				<Link to="/register">Создать аккаунт</Link>
-			</FlexContainer>
+		<FlexContainer flexDir="col" justify="center" align="center" className="min-h-[80vh] w-full px-6 animate-fade-in">
+			<div className="glass-panel w-full max-w-md p-10 animate-slide-up shadow-premium">
+				<div className="text-center mb-10">
+					<h1 className="text-3xl font-black mb-3 tracking-tight">С возвращением</h1>
+					<p className="text-text-muted">Введите свои данные для входа в аккаунт</p>
+				</div>
+
+				<form
+					ref={formRef}
+					className="flex flex-col gap-6"
+					id="login-form"
+					onSubmit={(e) => {
+						e.preventDefault();
+						onSubmit();
+					}}
+				>
+					<div className="space-y-2">
+						<label htmlFor="email" className="text-sm font-bold ml-1 text-text-muted">Почта</label>
+						<Input
+							type="email"
+							value={formState.email}
+							onChange={(e) => {
+								runInAction(() => {
+									formState.email = e.target.value;
+								});
+							}}
+							id="email"
+							placeholder="example@mail.com"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<div className="flex justify-between items-center px-1">
+							<label htmlFor="password" className="text-sm font-bold text-text-muted">Пароль</label>
+							<Link to="/forgot-password" className="text-xs font-bold text-primary hover:underline">Забыли?</Link>
+						</div>
+						<Input
+							type="password"
+							value={formState.password}
+							onChange={(e) => {
+								runInAction(() => {
+									formState.password = e.target.value;
+								});
+							}}
+							id="password"
+							placeholder="••••••••"
+							className="premium-input py-3.5"
+							required
+						/>
+					</div>
+
+					<SubmitButton 
+						formId="login-form" 
+						onClick={onSubmit}
+						variant="primary"
+						size="xl"
+						rounded="2xl"
+						fullWidth
+					>
+						Войти
+					</SubmitButton>
+				</form>
+
+				<div className="mt-10 pt-6 border-t border-border-color/50 text-center">
+					<p className="text-sm text-text-muted font-medium">
+						Нет аккаунта?{' '}
+						<Link to="/register" className="text-primary font-black hover:underline underline-offset-4">
+							Зарегистрироваться
+						</Link>
+					</p>
+				</div>
+			</div>
 		</FlexContainer>
 	);
 });

@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from 'react';
+import cn from '@/shared/utils/cn';
 
 type SupportedCurrencies = 'RUB';
 
@@ -14,9 +15,10 @@ function getCurrencySymbolFromCurrencyName(
 export default function Price({
 	children,
 	currency = 'RUB',
-}: PropsWithChildren & { currency?: SupportedCurrencies }) {
+	className,
+}: PropsWithChildren & { currency?: SupportedCurrencies; className?: string }) {
 	return (
-		<div className="price">
+		<div className={cn('price inline-flex items-center', className)}>
 			{children}
 			<span className="ml-1">
 				{getCurrencySymbolFromCurrencyName(currency)}

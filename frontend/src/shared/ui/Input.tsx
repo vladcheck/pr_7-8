@@ -1,11 +1,6 @@
-import type { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes } from 'react';
 import cn from '@/shared/utils/cn';
 import InputWrapper from './InputWrapper';
-
-interface NumberInputProps {
-	min?: number;
-	max?: number;
-}
 
 export default function Input({
 	value,
@@ -13,8 +8,7 @@ export default function Input({
 	type = 'text',
 	className,
 	...props
-}: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> &
-	Partial<NumberInputProps>) {
+}: InputHTMLAttributes<HTMLInputElement>) {
 	return (
 		<InputWrapper>
 			<input

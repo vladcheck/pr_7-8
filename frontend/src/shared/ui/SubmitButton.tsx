@@ -1,31 +1,45 @@
-import type { ButtonHTMLAttributes, PropsWithChildren } from 'react';
-import cn from '@/shared/utils/cn';
+import type { MouseEvent, ReactNode, SyntheticEvent } from 'react';
+import Button from '@/shared/ui/Button';
+
+type ButtonVariant = 'primary' | 'secondary' | 'glass' | 'danger' | 'ghost' | 'ghost-primary' | 'secondary-danger' | 'secondary-success' | 'outline' | 'none';
+type ButtonSize = 'sm' | 'md' | 'lg' | 'xl' | 'icon';
+type ButtonRounded = 'md' | 'lg' | 'xl' | '2xl' | 'full';
+
+interface SubmitButtonProps {
+	children?: ReactNode;
+	formId: string;
+	onClick?: (e?: SyntheticEvent) => void;
+	variant?: ButtonVariant;
+	size?: ButtonSize;
+	rounded?: ButtonRounded;
+	fullWidth?: boolean;
+	className?: string;
+}
 
 export default function SubmitButton({
+	children,
 	formId,
 	onClick,
-	children,
+	variant = 'primary',
+	size = 'lg',
+	rounded = '2xl',
+	fullWidth = true,
 	className,
-	...props
-}: PropsWithChildren &
-	ButtonHTMLAttributes<HTMLButtonElement> & {
-		formId: string;
-	}) {
+}: SubmitButtonProps) {
 	return (
-		<button
-			type="submit"
+		<Button
 			form={formId}
-			onClick={(e) => {
-				e.preventDefault();
+			type="submit"
+			onClick={(e: MouseEvent<HTMLButtonElement>) => {
 				onClick?.(e);
 			}}
-			className={cn(
-				'transition-colors duration-150 bg-gray-900 text-white px-4 py-1 rounded-xl hover:bg-gray-800',
-				className,
-			)}
-			{...props}
+			variant={variant}
+			size={size}
+			rounded={rounded}
+			fullWidth={fullWidth}
+			className={className}
 		>
 			{children}
-		</button>
+		</Button>
 	);
 }

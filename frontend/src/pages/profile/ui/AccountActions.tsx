@@ -9,9 +9,21 @@ export default function AccountActions({
 	onDeleteAccount: () => void;
 }) {
 	return (
-		<FlexContainer className="gap-10">
-			<Button onClick={onLogOut}>Выйти</Button>
-			<Button onClick={onDeleteAccount} className="bg-red-400">
+		<FlexContainer className="gap-4">
+			<Button 
+				onClick={onLogOut}
+				variant="secondary"
+				size="lg"
+				rounded="xl"
+			>
+				Выйти
+			</Button>
+			<Button 
+				onClick={onDeleteAccount}
+				variant="danger"
+				size="lg"
+				rounded="xl"
+			>
 				Удалить аккаунт
 			</Button>
 		</FlexContainer>

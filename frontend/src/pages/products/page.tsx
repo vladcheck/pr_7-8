@@ -1,6 +1,5 @@
 import type { Product } from '@root-shared/types/Product';
 import { useEffect, useState } from 'react';
-import useUserInfo from '@/features/api/hooks/useUserInfo';
 import useApi from '@/features/api/useApi';
 import useDebouncer from '@/shared/hooks/useDebouncer';
 import FlexContainer from '@/shared/ui/FlexContainer';
@@ -11,7 +10,6 @@ import Sidebar from './ui/Sidebar';
 
 export default function ProductsPage() {
 	const api = useApi();
-	const userInfo = useUserInfo();
 	const [products, setProducts] = useState<Product[]>([]);
 	const [filters, setFilters] = useState<Filters>({
 		price: {
@@ -46,25 +44,44 @@ export default function ProductsPage() {
 	}, [api]);
 
 	return (
-		userInfo && (
-			<FlexContainer className="gap-4 pt-6">
-				<Sidebar filters={filters} setFilters={setFilters} />
-				<div className="w-300">
+		<div className="w-full max-w-[1400px] px-6 py-8 animate-fade-in">
+			{/* Hero Section */}
+			<div className="mb-12 text-center max-w-2xl mx-auto animate-slide-up">
+				<h2 className="text-4xl font-black mb-4 tracking-tight">
+					Наш Каталог
+				</h2>
+				<p className="text-text-muted text-lg">
+					Откройте для себя лучшие товары по выгодным ценам. Качество и стиль в каждой детали.
+				</p>
+			</div>
+
+			<FlexContainer className="gap-8 items-start">
+				<div className="sticky top-24 shrink-0 transition-all">
+					<Sidebar filters={filters} setFilters={setFilters} />
+				</div>
+				
+				<div className="flex-1 min-w-0">
 					{filteredProducts.length ? (
-						<div className="flex-1 grid grid-cols-4 p-2 gap-2 justify-items-center justify-center">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 							{filteredProducts.map((p) => (
 								<CatalogueProductCard key={p.id} {...p} />
 							))}
 						</div>
 					) : (
-						<FlexContainer justify="center" align="center" className="gap-2">
-							<h2 className="text-2xl">
-								Мы не нашли товаров по вашему запросу
-							</h2>
+						<FlexContainer justify="center" align="center" className="py-20 glass-panel animate-slide-up">
+							<div className="text-center">
+								<div className="text-4xl mb-4">🔍</div>
+								<h2 className="text-2xl font-bold mb-2">
+									Товары не найдены
+								</h2>
+								<p className="text-text-muted">
+									Попробуйте изменить параметры фильтрации
+								</p>
+							</div>
 						</FlexContainer>
 					)}
 				</div>
 			</FlexContainer>
-		)
+		</div>
 	);
 }
