@@ -1,4 +1,4 @@
-import { ActionDispatch, useReducer, useRef } from "react";
+import { useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import SubmitButton from "@/shared/ui/SubmitButton";
 import FlexContainer from "@/shared/ui/FlexContainer";
@@ -6,46 +6,39 @@ import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import TextInput from "@/shared/ui/TextInput";
 import useApi from "@/features/api/useApi";
-import { FormState, ReducerAction } from "./types";
-import reducer from "./reducer";
 import { UserRole } from "@root-shared/types/User";
 import { fakerEN_US } from "@faker-js/faker";
 import Button from "@/shared/ui/Button";
 import useNotify from "@/features/notifications/useNotify";
+import { observer, useLocalObservable } from "mobx-react-lite";
+import { runInAction } from "mobx";
 
-const initialFormState: FormState = {
-  firstName: "",
-  lastName: "",
-  password: "",
-  submitPassword: "",
-  email: "",
-  roles: ["user"],
-};
-
-function fillWithRandomData(dispatch: ActionDispatch<[action: ReducerAction]>) {
-  const password = "1234";
-
-  const fakeState: FormState = {
-    firstName: fakerEN_US.person.firstName(),
-    lastName: fakerEN_US.person.lastName(),
-    email: fakerEN_US.internet.email(),
-    password,
-    submitPassword: password,
-    roles: ["user", "admin", "seller"],
-  };
-
-  dispatch({
-    type: "SET_STATE",
-    state: fakeState,
-  });
-}
-
-export default function RegisterPage() {
+const RegisterPage = observer(function RegisterPage() {
   const notifier = useNotify();
   const api = useApi();
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
-  const [formState, dispatch] = useReducer(reducer, initialFormState);
+  
+  const formState = useLocalObservable(() => ({
+    firstName: "",
+    lastName: "",
+    password: "",
+    submitPassword: "",
+    email: "",
+    roles: ["user"] as UserRole[],
+  }));
+
+  function fillWithRandomData() {
+    const password = "1234";
+    runInAction(() => {
+      formState.firstName = fakerEN_US.person.firstName();
+      formState.lastName = fakerEN_US.person.lastName();
+      formState.email = fakerEN_US.internet.email();
+      formState.password = password;
+      formState.submitPassword = password;
+      formState.roles = ["user", "admin", "seller"];
+    });
+  }
 
   const onSubmit = async () => {
     if (formRef.current?.checkValidity()) {
@@ -71,7 +64,7 @@ export default function RegisterPage() {
         className="form flex flex-col justify-center items-center gap-2"
         id="register-form"
       >
-        <Button onClick={() => fillWithRandomData(dispatch)}>
+        <Button onClick={fillWithRandomData}>
           Заполнить случайными данными
         </Button>
         <LabelInputBlock htmlFor="role" label="Роль">
@@ -79,15 +72,13 @@ export default function RegisterPage() {
             name="role"
             id="role"
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "roles",
-                value: [
+              runInAction(() => {
+                formState.roles = [
                   ...formState.roles,
                   ...[...e.target.selectedOptions].map(
                     (opt) => opt.value as UserRole,
                   ),
-                ],
+                ];
               });
             }}
             value={formState.roles}
@@ -102,11 +93,7 @@ export default function RegisterPage() {
           <TextInput
             value={formState.firstName}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "firstName",
-                value: e.target.value,
-              });
+               runInAction(() => formState.firstName = e.target.value);
             }}
             id="firstName"
             required
@@ -116,11 +103,7 @@ export default function RegisterPage() {
           <TextInput
             value={formState.lastName}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "lastName",
-                value: e.target.value,
-              });
+               runInAction(() => formState.lastName = e.target.value);
             }}
             id="lastName"
             required
@@ -131,11 +114,7 @@ export default function RegisterPage() {
             type="email"
             value={formState.email}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "email",
-                value: e.target.value,
-              });
+               runInAction(() => formState.email = e.target.value);
             }}
             id="email"
             required
@@ -146,11 +125,7 @@ export default function RegisterPage() {
             type="password"
             value={formState.password}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "password",
-                value: e.target.value,
-              });
+               runInAction(() => formState.password = e.target.value);
             }}
             id="password"
             required
@@ -161,11 +136,7 @@ export default function RegisterPage() {
             type="password"
             value={formState.submitPassword}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "submitPassword",
-                value: e.target.value,
-              });
+               runInAction(() => formState.submitPassword = e.target.value);
             }}
             id="submitPassword"
             required
@@ -186,4 +157,6 @@ export default function RegisterPage() {
       </FlexContainer>
     </FlexContainer>
   );
-}
+});
+
+export default RegisterPage;

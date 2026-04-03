@@ -19,35 +19,43 @@ export default function useNotify() {
     });
   };
 
-  const notifyError = (message: ToastContent<unknown>, ms: number = 1000) => {
+  const notifyError = (message: ToastContent<unknown>, ms: number = 1000, callback?: () => void) => {
     toast.error(message, {
       ...CONFIG,
+      pauseOnHover: callback ? false : CONFIG.pauseOnHover,
       type: "error",
       autoClose: ms,
+      onClose: callback
     });
   };
 
-  const notifyInfo = (message: ToastContent<unknown>, ms: number = 1000) => {
+  const notifyInfo = (message: ToastContent<unknown>, ms: number = 1000, callback?: () => void) => {
     toast.info(message, {
       ...CONFIG,
+      pauseOnHover: callback ? false : CONFIG.pauseOnHover,
       type: "info",
       autoClose: ms,
+      onClose: callback
     });
   };
 
-  const notifyWarning = (message: ToastContent<unknown>, ms: number = 1000) => {
+  const notifyWarning = (message: ToastContent<unknown>, ms: number = 1000, callback?: () => void) => {
     toast.warn(message, {
       ...CONFIG,
+      pauseOnHover: callback ? false : CONFIG.pauseOnHover,
       type: "warning",
       autoClose: ms,
+      onClose: callback
     });
   };
 
-  const notifySuccess = (message: ToastContent<unknown>, ms: number = 1000) => {
+  const notifySuccess = (message: ToastContent<unknown>, ms: number = 1000, callback?: () => void) => {
     toast.success(message, {
       ...CONFIG,
+      pauseOnHover: callback ? false : CONFIG.pauseOnHover,
       type: "success",
       autoClose: ms,
+      onClose: callback
     });
   };
 

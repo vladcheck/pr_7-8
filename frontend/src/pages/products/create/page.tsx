@@ -1,12 +1,10 @@
-import { useReducer, useRef } from "react";
+import { useRef } from "react";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import SubmitButton from "@/shared/ui/SubmitButton";
-import { FormState } from "./types";
 import TextInput from "@/shared/ui/TextInput";
 import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import useApi from "@/features/api/useApi";
-import reducer from "./reducer";
 import {
   CATEGORIES,
   FORM_ID,
@@ -20,16 +18,16 @@ import useNotify from "@/features/notifications/useNotify";
 import { useNavigate } from "react-router";
 import useUserInfo from "@/features/api/hooks/useUserInfo";
 import ProtectedRouteError from "@/widgets/ProtectedRouteError";
+import { observer, useLocalObservable } from "mobx-react-lite";
+import { runInAction } from "mobx";
 
-export const initialState: FormState = {
-  title: "",
-  description: "",
-  price: MIN_ALLOWED_PRICE,
-  category: "Другое",
-};
-
-export default function CreateProductPage() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const CreateProductPage = observer(function CreateProductPage() {
+  const state = useLocalObservable(() => ({
+    title: "",
+    description: "",
+    price: MIN_ALLOWED_PRICE,
+    category: "Другое",
+  }));
   const api = useApi();
   const formRef = useRef<HTMLFormElement>(null);
   const notifier = useNotify();
@@ -74,10 +72,8 @@ export default function CreateProductPage() {
             <TextInput
               value={state.title}
               onChange={(e) => {
-                dispatch({
-                  type: "SET_VALUE",
-                  field: "title",
-                  value: e.target.value,
+                runInAction(() => {
+                  state.title = e.target.value;
                 });
               }}
               min={3}
@@ -93,10 +89,8 @@ export default function CreateProductPage() {
               min={MIN_ALLOWED_PRICE}
               max={MAX_ALLOWED_PRICE}
               onChange={(e) => {
-                dispatch({
-                  type: "SET_VALUE",
-                  field: "price",
-                  value: parseInt(e.target.value),
+                runInAction(() => {
+                  state.price = parseInt(e.target.value);
                 });
               }}
               id="price"
@@ -106,10 +100,8 @@ export default function CreateProductPage() {
           <LabelInputBlock label="Категория" htmlFor="category">
             <select
               onChange={(e) => {
-                dispatch({
-                  type: "SET_VALUE",
-                  field: "category",
-                  value: e.target.value,
+                runInAction(() => {
+                  state.category = e.target.value;
                 });
               }}
               value={state.category}
@@ -129,10 +121,8 @@ export default function CreateProductPage() {
               maxLength={2000}
               value={state.description}
               onChange={(e) => {
-                dispatch({
-                  type: "SET_VALUE",
-                  field: "description",
-                  value: e.target.value,
+                runInAction(() => {
+                  state.description = e.target.value;
                 });
               }}
               name="description"
@@ -147,4 +137,6 @@ export default function CreateProductPage() {
       </div>
     </FlexContainer>
   );
-}
+});
+
+export default CreateProductPage;

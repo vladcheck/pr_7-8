@@ -1,4 +1,4 @@
-import { useReducer, useRef } from "react";
+import { useRef } from "react";
 import { Link, useNavigate } from "react-router";
 import SubmitButton from "@/shared/ui/SubmitButton";
 import FlexContainer from "@/shared/ui/FlexContainer";
@@ -6,20 +6,18 @@ import Input from "@/shared/ui/Input";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import useApi from "@/features/api/useApi";
 import useNotify from "@/features/notifications/useNotify";
-import { FormState } from "./types";
-import reducer from "./reducer";
+import { observer, useLocalObservable } from "mobx-react-lite";
+import { runInAction } from "mobx";
 
-const initialFormState: FormState = {
-  email: "",
-  password: "",
-};
-
-export default function LoginPage() {
+const LoginPage = observer(function LoginPage() {
   const navigate = useNavigate();
   const notifier = useNotify();
   const formRef = useRef<HTMLFormElement>(null);
   const api = useApi();
-  const [formState, dispatch] = useReducer(reducer, initialFormState);
+  const formState = useLocalObservable(() => ({
+    email: "",
+    password: "",
+  }));
 
   const onSubmit = () => {
     if (
@@ -55,10 +53,8 @@ export default function LoginPage() {
             type="email"
             value={formState.email}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "email",
-                value: e.target.value,
+              runInAction(() => {
+                formState.email = e.target.value;
               });
             }}
             id="email"
@@ -70,10 +66,8 @@ export default function LoginPage() {
             type="password"
             value={formState.password}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "password",
-                value: e.target.value,
+              runInAction(() => {
+                formState.password = e.target.value;
               });
             }}
             id="password"
@@ -94,4 +88,6 @@ export default function LoginPage() {
       </FlexContainer>
     </FlexContainer>
   );
-}
+});
+
+export default LoginPage;

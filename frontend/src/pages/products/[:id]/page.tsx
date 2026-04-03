@@ -6,7 +6,9 @@ import FlexContainer from "@/shared/ui/FlexContainer";
 import FullProductCard from "../ui/FullProductCard";
 import useCart from "@/features/cart/useCart";
 
-export default function ProductPage() {
+import { observer } from "mobx-react-lite";
+
+const ProductPage = observer(function ProductPage() {
   const { id } = useParams();
   const { api } = useContext(ApiContext);
   const [product, setProduct] = useState<Product>();
@@ -42,4 +44,6 @@ export default function ProductPage() {
       <Link to={"/shop"}>Перейти в каталог</Link>
     </FlexContainer>
   );
-}
+});
+
+export default ProductPage;

@@ -1,23 +1,20 @@
-import { useReducer } from "react";
-import { FormState } from "./types";
-import reducer from "./reducer";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import useApi from "@/features/api/useApi";
 import SubmitButton from "@/shared/ui/SubmitButton";
 import LabelInputBlock from "@/shared/ui/LabelInputBlock";
 import Input from "@/shared/ui/Input";
-
-const initialState: FormState = {
-  name: "",
-  email: "",
-  newPassword: "",
-};
+import { observer, useLocalObservable } from "mobx-react-lite";
+import { runInAction } from "mobx";
 
 const FORM_ID = "reset-password-form";
 
-export default function ForgotPasswordPage() {
+const ForgotPasswordPage = observer(function ForgotPasswordPage() {
   const api = useApi();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const state = useLocalObservable(() => ({
+    name: "",
+    email: "",
+    newPassword: "",
+  }));
 
   const onSubmit = async () => {
     await api.resetPassword(state);
@@ -32,10 +29,8 @@ export default function ForgotPasswordPage() {
             type="text"
             value={state.name}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "name",
-                value: e.target.value,
+              runInAction(() => {
+                state.name = e.target.value;
               });
             }}
             required
@@ -46,24 +41,20 @@ export default function ForgotPasswordPage() {
             type="text"
             value={state.name}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "email",
-                value: e.target.value,
+              runInAction(() => {
+                state.email = e.target.value;
               });
             }}
             required
           />
         </LabelInputBlock>
-        <LabelInputBlock label="Имя" htmlFor="name">
+        <LabelInputBlock label="Пароль" htmlFor="newPassword">
           <Input
             type="text"
-            value={state.name}
+            value={state.newPassword}
             onChange={(e) => {
-              dispatch({
-                type: "SET_VALUE",
-                field: "name",
-                value: e.target.value,
+              runInAction(() => {
+                state.newPassword = e.target.value;
               });
             }}
             required
@@ -75,4 +66,6 @@ export default function ForgotPasswordPage() {
       </SubmitButton>
     </FlexContainer>
   );
-}
+});
+
+export default ForgotPasswordPage;
