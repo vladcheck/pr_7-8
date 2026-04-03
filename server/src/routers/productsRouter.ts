@@ -33,75 +33,9 @@ const upload = multer({ storage: storage });
 const productsRouter: Router = Router();
 export const productsPath = path.resolve(__dirname, "../db/products.json");
 
-/**
- * @swagger
- * components:
- *  schemas:
- *    Product:
- *      type: object
- *      required:
- *      - id
- *      - title
- *      - category
- *      - price
- *      optional:
- *      - description
- *      properties:
- *       id:
- *         type: string
- *         description: Автоматически сгенерированный ID товара
- *       title:
- *         type: string
- *       description:
- *         type: string
- *       category:
- *         type: string
- *         description: Категория товаров, к которой относится этот товар
- *       price:
- *         type: number
- *         description: Цена в рублях
- *      example:
- *       id: "dfas31"
- *       title: "Фарфоровая чашка"
- *       category: "Посуда"
- *       description: "Фарворовая чашка на восьмое марта! Подари маме, бабушке, подруге!"
- *       price: 1400
- */
 
-/**
- * @swagger
- * /api/products:
- *    get:
- *      summary: Получить все товары
- *      tags: [Products]
- *      responses:
- *        200:
- *          description: Товары получены
- *          content:
- *            application/json:
- *              schema:
- *                type: array
- *                items:
- *                  $ref: '#/components/schemas/Product'
- *    post:
- *      summary: Создать товар
- *      tags: [Products]
- *      requestBody:
- *        required: true
- *      responses:
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Product'
- *        400:
- *          description: Некорректное тело запроса
- *        201:
- *          description: Товар успешно создан
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/Product'
- */
+
+
 productsRouter
   .get("/", async (req: Request, res: Response) => {
     const queryParams: { author_id?: string; page?: string; limit?: string } =
@@ -181,50 +115,7 @@ productsRouter
     },
   );
 
-/**
- * @swagger
- * /api/products/:id:
- *    get:
- *      summary: Получить товар по ID
- *      tags: [Products]
- *      responses:
- *        400:
- *          description: Некорректное тело запроса
- *        404:
- *          description: Товара с таким ID не существует
- *        200:
- *          description: Товар найден
- *          content:
- *            application/json:
- *              schema:
- *               $ref: '#/components/schemas/Product'
- *    put:
- *      summary: Обновить информацию о товаре с определенным ID
- *      tags: [Products]
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/Product'
- *      responses:
- *       400:
- *          description: Некорректное тело запроса
- *       404:
- *          description: Товара с таким ID не существует
- *       200:
- *          description: Товар обновлен
- *    delete:
- *      summary: Удалить товар по ID
- *      tags: [Products]
- *      responses:
- *        400:
- *          description: ID не передан
- *        404:
- *          description: Товара с таким ID не существует
- *        200:
- *          description: Товар успешно удален
- */
+
 productsRouter
   .get("/:id", async (req: Request, res: Response) => {
     // TODO: нужен ли нам authMiddleware для GET?

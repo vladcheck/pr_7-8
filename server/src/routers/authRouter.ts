@@ -35,72 +35,7 @@ function getUserTokenBody(user: UserEntity, type: TokenType) {
     : { firstName: user.firstName };
 }
 
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Регистрация пользователя
- *     description: Создает нового пользователя с хешированным паролем
- *     tags: [Auth, Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - firstName
- *               - lastName
- *               - password
- *               - email
- *               - roles
- *             properties:
- *                firstName:
- *                 type: string
- *                 example: Ivan
- *                lastName:
- *                  type: string
- *                  example: Sidelnikov
- *                password:
- *                 type: string
- *                 example: qwerty123
- *                email:
- *                 type: string
- *                 example: ivan@yandex.ru
- *                roles:
- *                  type: string[]
- *                  example: ["user","admin"]
- *     responses:
- *       201:
- *         description: Пользователь успешно создан
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                  id:
- *                    type: string
- *                    example: ab12cd
- *                  firstName:
- *                    type: string
- *                    example: Ivan
- *                  lastName:
- *                    type: string
- *                    example: Sidelnikov
- *                  email:
- *                    type: string
- *                    example: ivan@yandex.ru
- *                  roles:
- *                    type: string[]
- *                    example: ["user","admin"]
- *                  hashedPassword:
- *                    type: string
- *                    example: $2b$10$kO6Hq7ZKfV4cPzGm8u7mEuR7r4Xx2p9mP0q3t1yZbCq9Lh5a8b1QW
- *       400:
- *         description: Некорректные данные
- *       409:
- *         description: Пользователь с такой почтой уже существует
- */
+
 authRouter.post("/register", async (req: Request, res: Response) => {
   const b: UserRequestBody = req.body;
 
@@ -185,37 +120,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
   return res.status(StatusCodes.CREATED).json(userCopy);
 });
 
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Авторизация пользователя
- *     description: Проверяет логин и пароль пользователя
- *     tags: [Auth, Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *                 example: ivan
- *               password:
- *                 type: string
- *                 example: qwerty123
- *     responses:
- *       400:
- *         description: Отсутствуют обязательные поля или введены неверные учетные данные (напр. пароли не совпадают)
- *       404:
- *         description: Пользователь не найден
- *       200:
- *         description: Пользователь успешно авторизован
- */
+
 authRouter.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -246,39 +151,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     .json({ accessToken, refreshToken, uid: u.id });
 });
 
-/**
- * @swagger
- * /api/auth/refresh:
- *   post:
- *     summary: Провести ротацию токенов пользователя
- *     description: Обновляет токены доступа и токен обновления, возвращая их пользователю
- *     tags: [Auth, Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *                 example: ivan
- *               password:
- *                 type: string
- *                 example: qwerty123
- *     responses:
- *       400:
- *         description: Отсутствуют обязательные поля или введены неверные учетные данные (напр. пароли не совпадают)
- *       401:
- *        description: Пользователь не авторизован
- *       404:
- *         description: Пользователь не найден
- *       200:
- *         description: Пользователь успешно авторизован
- */
+
 authRouter.post("/refresh", async (req: Request, res: Response) => {
   const { refreshToken } = req.body;
 
@@ -314,41 +187,7 @@ authRouter.post("/refresh", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * @swagger
- * /api/auth/me:
- *  get:
- *    summary: Получить данные клиента, если он авторизован
- *    tags: [Users, Auth]
- *    description: Если клиент авторизован, то вернет информацию о нем
- *    headers:
- *      Authorization:
- *        required: true
- *    responses:
- *      500:
- *        description: Ошибка на стороне сервера
- *      404:
- *        description: Пользователь с таким ID не обнаружен
- *      200:
- *        description: Пользователь авторизован
- *        content:
- *          application/json:
- *            schema:
- *              properties:
- *                id:
- *                  type: string
- *                  example: dfas12
- *                firstName:
- *                  type: string
- *                  example: Сергей
- *                lastName:
- *                  type: string
- *                  example: Овчинников
- *                email:
- *                  type: string
- *                password:
- *                  type: string
- */
+
 authRouter.get(
   "/me",
   authMiddleware,
