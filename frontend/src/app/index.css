@@ -1,25 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme {
+	--color-primary: #8b5cf6;
+	--color-primary-hover: #7c3aed;
+	--color-bg-light: #ffffff;
+	--color-bg-app: #f3f4f6;
+	--color-surface: #ffffff;
+	--color-surface-hover: #f9fafb;
+	--color-text: #1f2937;
+	--color-text-muted: #6b7280;
+
+	--color-dark-bg: #0f172a;
+	--color-dark-surface: #1e293b;
+	--color-dark-surface-hover: #334155;
+	--color-dark-text: #f8fafc;
+	--color-dark-text-muted: #94a3b8;
 }
 
-.input-wrapper:has(:required):after {
-  content: "*";
-  position: absolute;
-  font-size: 1.6rem;
-  top: -22px;
-  right: -8px;
-  color: rgb(255, 0, 0);
+@layer base {
+	:root {
+		--bg-color: var(--color-bg-app);
+		--surface-color: var(--color-surface);
+		--surface-hover: var(--color-surface-hover);
+		--text-color: var(--color-text);
+		--text-muted: var(--color-text-muted);
+		--border-color: #e5e7eb;
+
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+
+		background-color: var(--bg-color);
+		color: var(--text-color);
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--bg-color: var(--color-dark-bg);
+			--surface-color: var(--color-dark-surface);
+			--surface-hover: var(--color-dark-surface-hover);
+			--text-color: var(--color-dark-text);
+			--text-muted: var(--color-dark-text-muted);
+			--border-color: #334155;
+		}
+	}
+
+	body {
+		background-color: var(--bg-color);
+		color: var(--text-color);
+		font-family: "Inter", system-ui, sans-serif;
+	}
+}
+
+@layer components {
+	.btn-primary {
+		@apply relative overflow-hidden bg-primary text-white font-medium px-6 py-2 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-primary/50 active:translate-y-0 active:shadow-primary/30;
+	}
+
+	.glass-panel {
+		@apply bg-surface/80 backdrop-blur-md border border-border-color rounded-2xl shadow-xl transition-all duration-300;
+	}
+
+	.input-field {
+		@apply w-full bg-surface-hover border border-border-color rounded-xl px-4 py-3 outline-none transition-all duration-300 focus:ring-2 focus:ring-primary focus:border-transparent;
+	}
+
+	.input-wrapper:has(:required):after {
+		content: "*";
+		position: absolute;
+		font-size: 1.2rem;
+		top: 4px;
+		right: 8px;
+		color: #ef4444;
+	}
 }
 
 input:user-invalid {
-  text-decoration: undreline dashed red 1px;
+	@apply ring-2 ring-red-500 border-transparent;
 }
 
 button:not(:disabled):hover {
-  cursor: pointer;
+	cursor: pointer;
 }

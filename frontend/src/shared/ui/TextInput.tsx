@@ -1,16 +1,16 @@
-import type { BaseHTMLAttributes, ChangeEvent } from "react";
-import Input from "./Input";
+import type { BaseHTMLAttributes, ChangeEvent } from 'react';
+import Input from './Input';
 
 export default function TextInput({
-  value,
-  onChange,
-  ...props
+	value,
+	onChange,
+	...props
 }: {
-  value?: string | number;
-  min?: number;
-  max?: number;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  required: boolean;
+	value?: string | number;
+	min?: number;
+	max?: number;
+	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	required: boolean;
 } & BaseHTMLAttributes<HTMLInputElement>) {
-  return <Input {...props} type="text" value={value} onChange={onChange} />;
+	return <Input {...props} type="text" value={value} onChange={onChange} />;
 }

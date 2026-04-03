@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 
 export default function useHistory(): History | undefined {
-  const [history, setHistory] = useState<History>();
+	const [history, setHistory] = useState<History>();
 
-  useEffect(() => {
-    setHistory(window.history);
-  }, [window.history]);
+	useEffect(() => {
+		setHistory(window.history);
+	}, []);
 
-  return history;
+	return history;
 }

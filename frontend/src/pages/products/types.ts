@@ -1,6 +1,6 @@
 export interface Filters {
-  price: {
-    min: number;
-    max: number;
-  };
+	price: {
+		min: number;
+		max: number;
+	};
 }

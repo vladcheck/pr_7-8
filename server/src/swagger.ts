@@ -1,17 +1,23 @@
-import swaggerUi from "swagger-ui-express";
-import fs from "fs";
-import path from "path";
+import fs from 'node:fs';
+import path from 'node:path';
+import swaggerUi from 'swagger-ui-express';
 
 let swaggerSpec = {};
 try {
-  const fileOutput = fs.readFileSync(path.resolve(process.cwd(), "public/swagger.json"), "utf8");
-  swaggerSpec = JSON.parse(fileOutput);
+	const fileOutput = fs.readFileSync(
+		path.resolve(process.cwd(), 'public/swagger.json'),
+		'utf8',
+	);
+	swaggerSpec = JSON.parse(fileOutput);
 } catch (error) {
-  console.error("Swagger file not found. Run pnpm start to generate it.", error);
+	console.error(
+		'Swagger file not found. Run pnpm start to generate it.',
+		error,
+	);
 }
 
-export const swaggerParams: any[] = [
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec),
+export const swaggerParams: unknown[] = [
+	'/api-docs',
+	swaggerUi.serve,
+	swaggerUi.setup(swaggerSpec),
 ];

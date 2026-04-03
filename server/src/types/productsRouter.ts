@@ -1,7 +1,7 @@
-import { Product as ProductEntity } from "../../../shared/types/Product";
+import type { Product as ProductEntity } from '../../../shared/types/Product';
 
 export type ProductRequestBody = {
-  [K in keyof ProductEntity]: string;
+	[K in keyof ProductEntity]: string;
 } & {
-  author_id: string;
+	author_id: string;
 };

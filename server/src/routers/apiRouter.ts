@@ -1,13 +1,13 @@
-import { Router, type Request, type Response } from "express";
-import authRouter from "./authRouter";
-import usersRouter from "./usersRouter";
-import productsRouter from "./productsRouter";
-import { getOk } from "../utils/requestHelpers";
+import { type Request, type Response, Router } from 'express';
+import { getOk } from '../utils/requestHelpers';
+import authRouter from './authRouter';
+import productsRouter from './productsRouter';
+import usersRouter from './usersRouter';
 
 const apiRouter: Router = Router();
-apiRouter.use("/api/auth", authRouter);
-apiRouter.use("/api/users", usersRouter);
-apiRouter.use("/api/products", productsRouter);
+apiRouter.use('/api/auth', authRouter);
+apiRouter.use('/api/users', usersRouter);
+apiRouter.use('/api/products', productsRouter);
 
 /*\
  * @swagger
@@ -19,8 +19,8 @@ apiRouter.use("/api/products", productsRouter);
  *      200:
  *        description: Сервер работает
  */
-apiRouter.get("/api/", async (_req: Request, res: Response) => {
-  return getOk(res);
+apiRouter.get('/api/', async (_req: Request, res: Response) => {
+	return getOk(res);
 });
 
 export default apiRouter;

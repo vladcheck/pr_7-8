@@ -1,9 +1,9 @@
-import { useState, type PropsWithChildren } from "react";
-import apiFacade from "./ApiFacade";
-import ApiContext from "./ApiContext";
+import { type PropsWithChildren, useState } from 'react';
+import ApiContext from './ApiContext';
+import apiFacade from './ApiFacade';
 
 export default function ApiWrapper({ children }: PropsWithChildren) {
-  const [api] = useState(apiFacade);
+	const [api] = useState(apiFacade);
 
-  return <ApiContext value={{ api }}>{children}</ApiContext>;
+	return <ApiContext value={{ api }}>{children}</ApiContext>;
 }
