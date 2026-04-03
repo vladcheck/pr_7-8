@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Product } from "@/entities/Product.ts";
+import { Product } from "@root-shared/types/Product";
 import FlexContainer from "@/shared/ui/FlexContainer.tsx";
 import Price from "@/shared/ui/Price.tsx";
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 import path from "path";
-import { ProductEntity } from "../entities/Product";
+import { Product as ProductEntity } from "../../../shared/types/Product";
 import authMiddleware from "../middleware/authMiddleware";
 import dbFacade from "../utils/DbFacade";
 import {
@@ -15,6 +15,9 @@ import type { Response, Request } from "express";
 import roleMiddleware from "../middleware/roleMiddleware";
 import nextId from "../utils/nextId";
 import { ProductRequestBody } from "../types/productsRouter";
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
 
 const productsRouter: Router = Router();
 export const productsPath = path.resolve(__dirname, "../db/products.json");
@@ -90,14 +93,28 @@ export const productsPath = path.resolve(__dirname, "../db/products.json");
  */
 productsRouter
   .get("/", async (req: Request, res: Response) => {
-    const queryParams: { author_id?: string } = req.query;
+    const queryParams: { author_id?: string; page?: string; limit?: string } = req.query as any;
     const entries: ProductEntity[] = await dbFacade.readEntries(productsPath);
     const filteredEntries = entries.filter((p) => {
       return queryParams.author_id
         ? p.author_id === queryParams.author_id
         : true;
     });
-    return res.status(StatusCodes.OK).json(filteredEntries);
+
+    const page = parseInt(queryParams.page || String(DEFAULT_PAGE), 10);
+    const limit = parseInt(queryParams.limit || String(DEFAULT_LIMIT), 10);
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+
+    const items = filteredEntries.slice(startIndex, endIndex);
+
+    return res.status(StatusCodes.OK).json({
+      items,
+      total: filteredEntries.length,
+      page,
+      limit,
+      totalPages: Math.ceil(filteredEntries.length / limit)
+    });
   })
   .post("/", async (req: Request, res: Response) => {
     const body: ProductRequestBody = req.body;

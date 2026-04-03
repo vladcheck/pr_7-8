@@ -1,4 +1,4 @@
-import { Product } from "@/entities/Product";
+import { Product } from "@root-shared/types/Product";
 import Button from "@/shared/ui/Button";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import Price from "@/shared/ui/Price";

@@ -28,7 +28,7 @@ export default function ProfilePage() {
     if (!userInfo?.id) return;
     api
       .getProducts(userInfo?.id)
-      .then((res) => setUserProducts(res.data))
+      .then((res) => setUserProducts(res.data.items))
       .catch((error) => notifier.notifyError(error));
   }, [userInfo?.id, api]);
 

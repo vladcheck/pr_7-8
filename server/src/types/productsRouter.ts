@@ -1,4 +1,4 @@
-import { ProductEntity } from "../entities/Product";
+import { Product as ProductEntity } from "../../../shared/types/Product";
 
 export type ProductRequestBody = {
   [K in keyof ProductEntity]: string;

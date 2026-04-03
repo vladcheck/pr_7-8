@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UserRole } from "../entities/User";
+import { UserRole } from "../../../shared/types/User";
 import { JwtPayload } from "jsonwebtoken";
 
 export default function roleMiddleware(allowedRoles: UserRole[]) {

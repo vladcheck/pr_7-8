@@ -1,10 +1,13 @@
 import axios, { AxiosResponse, HttpStatusCode } from "axios";
-import { UserLoginResponse, UserResponse } from "@/entities/User";
-import { Product, ProductResponse } from "@/entities/Product";
+import { UserLoginResponse, UserResponse } from "@root-shared/types/User";
+import { Product, ProductResponse } from "@root-shared/types/Product";
 
 const HOST = "http://localhost";
 const PORT = 3000;
 const URL = `${HOST}:${PORT}/api`;
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
 
 const apiClient = axios.create({
   baseURL: URL,
@@ -100,7 +103,7 @@ class ApiFacade {
 
   async _refreshTokens() {
     const refreshToken = localStorage.getItem("refreshToken");
-    const response = await apiClient.post("/auth/refresh", { refreshToken });
+    const response = await axios.post(`${URL}/auth/refresh`, { refreshToken });
     if (response.status !== HttpStatusCode.Unauthorized) {
       const { newAccessToken, newRefreshToken } = response.data;
       storeTokens({
@@ -163,12 +166,12 @@ class ApiFacade {
     }
   }
 
-  async getProducts(author_id?: string) {
+  async getProducts(author_id?: string, page: number = DEFAULT_PAGE, limit: number = DEFAULT_LIMIT) {
     const route = "/products";
-    const params: string[] = [];
+    const params: string[] = [`page=${page}`, `limit=${limit}`];
     if (author_id) params.push(`author_id=${author_id}`);
     const url = `${route}${params.length > 0 ? "?" + params.join("&") : ""}`;
-    const response: AxiosResponse<Product[]> = await apiClient.get(url);
+    const response: AxiosResponse<{ items: Product[]; total: number; page: number; limit: number; totalPages: number }> = await apiClient.get(url);
     return response;
   }
 
@@ -198,7 +201,7 @@ class ApiFacade {
   }
 
   async refresh(refreshToken: string) {
-    const response: AxiosResponse = await apiClient.post("/auth/refresh", {
+    const response: AxiosResponse = await axios.post(`${URL}/auth/refresh`, {
       refreshToken,
     });
     return response;

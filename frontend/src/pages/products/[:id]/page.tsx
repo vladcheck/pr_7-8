@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import ApiContext from "@/features/api/ApiContext";
-import { Product } from "@/entities/Product";
+import { Product } from "@root-shared/types/Product";
 import { Link, useParams } from "react-router";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import FullProductCard from "../ui/FullProductCard";

@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
-import { UserEntity } from "../entities/User";
+import { UserEntity } from "../types/UserEntity";
 import authMiddleware from "../middleware/authMiddleware";
 import dbFacade from "../utils/DbFacade";
 import { getBadRequest, getNotFound, getOk } from "../utils/requestHelpers";
 import type { Response, Request } from "express";
 import path from "node:path";
 import { productsPath } from "./productsRouter";
-import { ProductEntity } from "../entities/Product";
+import { Product as ProductEntity } from "../../../shared/types/Product";
 
 const usersRouter: Router = Router();
 const usersPath = path.resolve(__dirname, "../db/users.json");

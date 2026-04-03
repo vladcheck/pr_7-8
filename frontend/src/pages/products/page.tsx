@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Product } from "@/entities/Product";
+import { Product } from "@root-shared/types/Product";
 import CatalogueProductCard from "./ui/CatalogueProductCard";
 import FlexContainer from "@/shared/ui/FlexContainer";
 import useDebouncer from "@/shared/hooks/useDebouncer";
@@ -37,8 +37,8 @@ export default function ProductsPage() {
     api
       ?.getProducts()
       .then((res) => {
-        setProducts(res.data);
-        setFilteredProducts(res.data);
+        setProducts(res.data.items);
+        setFilteredProducts(res.data.items);
       })
       .catch((error) => {
         console.error(error);

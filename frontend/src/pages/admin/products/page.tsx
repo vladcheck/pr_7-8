@@ -12,7 +12,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     api
       .getProducts()
-      .then((response) => setProducts(response.data))
+      .then((response) => setProducts(response.data.items))
       .catch((error) => notifier.notifyError(error));
   }, [api]);
 
